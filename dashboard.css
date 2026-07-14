@@ -472,6 +472,14 @@ main {
   word-break: break-word;
 }
 
+.reference-explanation {
+  max-width: 700px;
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
 .copy-button {
   padding: 7px 10px;
   color: rgba(255, 255, 255, 0.72);
@@ -641,11 +649,15 @@ main {
   font-size: 22px;
 }
 
-.evisa-copy p:last-child {
+.evisa-copy p:not(.eyebrow) {
   margin-top: 7px;
   color: rgba(249, 245, 232, 0.69);
   font-size: 13px;
   line-height: 1.7;
+}
+
+.evisa-copy .download-requirements {
+  color: rgba(249, 245, 232, 0.9);
 }
 
 .evisa-link {
@@ -663,6 +675,93 @@ main {
 
 .evisa-link svg {
   width: 17px;
+}
+
+.sync-panel {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.7fr) minmax(0, 1.3fr);
+  gap: 36px;
+  align-items: center;
+  margin-top: 22px;
+  padding: 32px 34px;
+  background: rgba(255, 254, 249, 0.72);
+  border: 1px solid rgba(20, 45, 43, 0.12);
+  border-radius: 3px 3px 24px 3px;
+}
+
+.sync-heading > span {
+  color: var(--vermilion);
+  font: 700 10px Georgia, serif;
+  letter-spacing: 0.16em;
+}
+
+.sync-heading h2,
+.sync-heading p {
+  margin: 0;
+}
+
+.sync-heading h2 {
+  margin-top: 8px;
+  font-family: "Noto Serif CJK TC", "Songti TC", STSong, serif;
+  font-size: 22px;
+}
+
+.sync-heading p {
+  margin-top: 9px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.sync-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sync-control {
+  display: flex;
+  gap: 9px;
+}
+
+.sync-control input {
+  min-width: 0;
+  flex: 1;
+  padding: 13px 14px;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font: 12px/1.4 Consolas, monospace;
+}
+
+.sync-control button {
+  padding: 0 17px;
+  color: var(--white);
+  background: var(--ink);
+  border: 0;
+  border-radius: 3px 3px 11px 3px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sync-control button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.sync-notice {
+  min-height: 20px;
+  margin: 8px 0 0;
+  color: var(--jade);
+  font-size: 11px;
+}
+
+.sync-notice.error {
+  color: var(--vermilion);
 }
 
 footer {
@@ -716,6 +815,10 @@ footer p {
 
   .evisa-panel {
     grid-template-columns: auto 1fr;
+  }
+
+  .sync-panel {
+    grid-template-columns: 1fr;
   }
 
   .evisa-link {
@@ -796,6 +899,18 @@ footer p {
   .evisa-panel {
     grid-template-columns: 1fr;
     padding: 28px 24px;
+  }
+
+  .sync-panel {
+    padding: 26px 22px;
+  }
+
+  .sync-control {
+    flex-direction: column;
+  }
+
+  .sync-control button {
+    min-height: 46px;
   }
 
   .evisa-icon {

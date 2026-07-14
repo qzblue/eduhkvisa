@@ -1,0 +1,24 @@
+{
+  "name": "eduhk-visa-portal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Multi-user portal for the EduHK visa browser helper.",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "connect-pg-simple": "^10.0.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0",
+    "pg": "^8.22.0",
+    "zod": "^4.4.3"
+  }
+}

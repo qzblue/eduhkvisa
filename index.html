@@ -83,6 +83,9 @@
             <span class="reference-label">这是你的签证编号 · VISA REFERENCE NUMBER</span>
             <strong id="immdRefNo">—</strong>
             <button id="copyReferenceButton" class="copy-button" type="button">复制编号</button>
+            <p id="referenceExplanation" class="reference-explanation">
+              以 MEEN 开头的是入境处申请档案编号。电子签证签发后，你需要使用这个编号到入境处官网查询和下载。
+            </p>
           </div>
           <div class="reference-seal" aria-hidden="true">
             <span>VISA</span>
@@ -116,7 +119,10 @@
             <p class="eyebrow">HKSAR E-VISA</p>
             <h2>请下载你的电子签证</h2>
             <p id="evisaMessage">
-              请进入香港入境处官方网站，使用上方签证编号查询并下载你的签证。
+              申请获批并完成缴费（如适用）后，请进入香港入境处官方网站查询并下载。
+            </p>
+            <p class="download-requirements">
+              下载时还需准备：申请人的出生日期、申请时旅行证件号码的首四个字母或数字。
             </p>
           </div>
           <a
@@ -128,6 +134,28 @@
             进入入境处官网并下载
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
           </a>
+        </article>
+
+        <article class="sync-panel">
+          <div class="sync-heading">
+            <span>同步到网站</span>
+            <h2>要在签证中心网站查看？</h2>
+            <p>先在网站登录并点击“开始查询”，网站会生成一条连接码。把整条连接码粘贴到下面即可。</p>
+          </div>
+          <div class="sync-form">
+            <label for="pairingInput">网站连接码</label>
+            <div class="sync-control">
+              <input
+                id="pairingInput"
+                type="text"
+                inputmode="url"
+                autocomplete="off"
+                placeholder="例如：https://visa.example.com/connect#..."
+              />
+              <button id="syncButton" type="button">发送到我的网站页面</button>
+            </div>
+            <p id="syncNotice" class="sync-notice" role="status" aria-live="polite"></p>
+          </div>
         </article>
       </section>
     </main>

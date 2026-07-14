@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="安全读取并整理香港教育大学学生签证申请档案编号。" />
+    <title>教大签证查询中心</title>
+    <link rel="stylesheet" href="portal.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="/">
+        <span class="brand-mark">V</span>
+        <span><strong>签证查询中心</strong><small>EDUHK VISA READER</small></span>
+      </a>
+      <div id="userMenu" class="user-menu" hidden>
+        <span id="userEmail"></span>
+        <button id="logoutButton" type="button">退出登录</button>
+      </div>
+      <div id="privacyBadge" class="privacy-badge"><span></span>不收集教大密码</div>
+    </header>
+
+    <main>
+      <section id="authView" class="auth-view" hidden>
+        <div class="auth-intro">
+          <p class="eyebrow">A SAFER WAY TO READ YOUR VISA REFERENCE</p>
+          <h1>登录自己的<br /><em>签证信息空间</em></h1>
+          <p>
+            每位学生拥有独立的网站会话。教大账号只在教大官网输入，本站不会要求你的教大密码或 Cookie。
+          </p>
+          <div class="safety-note">
+            <strong>为什么还需要浏览器插件？</strong>
+            <span>浏览器不允许普通网站读取另一个网站的登录资料。插件只负责在你的电脑上读取本人资料。</span>
+          </div>
+        </div>
+
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button id="loginTab" class="active" type="button">登录</button>
+            <button id="registerTab" type="button">注册</button>
+          </div>
+
+          <form id="loginForm" class="auth-form">
+            <div class="form-heading"><span>欢迎回来</span><h2>登录签证中心</h2></div>
+            <label>邮箱地址<input name="email" type="email" autocomplete="email" required /></label>
+            <label>网站密码<input name="password" type="password" autocomplete="current-password" minlength="10" required /></label>
+            <button class="solid-button" type="submit">登录</button>
+          </form>
+
+          <form id="registerForm" class="auth-form" hidden>
+            <div class="form-heading"><span>第一次使用</span><h2>创建网站账号</h2></div>
+            <label>邮箱地址<input name="email" type="email" autocomplete="email" required /></label>
+            <label>设置网站密码<input name="password" type="password" autocomplete="new-password" minlength="10" required /></label>
+            <small>至少 10 个字符。这里设置的是本站密码，不是教大密码。</small>
+            <button class="solid-button" type="submit">注册并登录</button>
+          </form>
+          <p id="authNotice" class="form-notice" role="status"></p>
+        </div>
+      </section>
+
+      <section id="portalView" class="portal-view" hidden>
+        <div class="portal-heading">
+          <div>
+            <p class="eyebrow">YOUR PRIVATE VISA WORKSPACE</p>
+            <h1>查询我的签证编号</h1>
+            <p>第一次使用也没关系，按照下面四步操作即可。</p>
+          </div>
+          <span class="session-chip"><i></i>你的独立安全会话</span>
+        </div>
+
+        <section id="guidePanel" class="guide-panel">
+          <ol class="steps">
+            <li>
+              <span class="step-number">01</span>
+              <div><strong>安装查询插件</strong><p>插件负责从你已经登录的教大官网读取资料。</p><a href="https://github.com/qzblue/eduhkvisa" target="_blank" rel="noopener noreferrer">查看小白安装教程 ↗</a></div>
+            </li>
+            <li>
+              <span class="step-number">02</span>
+              <div><strong>登录教大官网</strong><p>请在同一个浏览器中登录，页面保持开启。</p><a href="https://pappl.eduhk.hk/VMS/admission/applicant/ImmD/submission" target="_blank" rel="noopener noreferrer">打开教大官网 ↗</a></div>
+            </li>
+            <li>
+              <span class="step-number">03</span>
+              <div><strong>生成一次性连接码</strong><p>点击下方按钮。连接码 10 分钟后自动失效。</p></div>
+            </li>
+            <li>
+              <span class="step-number">04</span>
+              <div><strong>粘贴到插件</strong><p>打开插件查询资料，再把连接码粘贴到“同步到网站”。</p></div>
+            </li>
+          </ol>
+
+          <button id="createQueryButton" class="solid-button start-button" type="button">
+            我已准备好，开始查询
+          </button>
+        </section>
+
+        <section id="connectionPanel" class="connection-panel" hidden>
+          <div class="connection-heading">
+            <p class="eyebrow">ONE-TIME CONNECTION</p>
+            <h2>复制这条连接码</h2>
+            <p>打开“教大签证进度助手”，查询成功后粘贴到页面底部的“同步到网站”。</p>
+          </div>
+          <div class="code-control">
+            <input id="connectionCode" type="text" readonly aria-label="一次性连接码" />
+            <button id="copyConnectionButton" type="button">复制连接码</button>
+          </div>
+          <div class="waiting-line">
+            <span class="pulse" aria-hidden="true"></span>
+            <div><strong>正在等待插件发送资料</strong><small id="expiryText"></small></div>
+          </div>
+          <p id="queryNotice" class="form-notice" role="status"></p>
+        </section>
+
+        <section id="resultPanel" class="result-panel" hidden>
+          <div class="result-topline">
+            <div><p class="eyebrow">VISA REFERENCE FOUND</p><h2>已找到你的签证编号</h2></div>
+            <button id="newQueryButton" type="button">重新查询</button>
+          </div>
+
+          <article class="number-card">
+            <span>入境处申请档案编号</span>
+            <strong id="portalImmdRefNo">—</strong>
+            <button id="copyVisaNumberButton" type="button">复制编号</button>
+            <p id="portalReferenceHelp"></p>
+          </article>
+
+          <div class="result-grid">
+            <article><span>申请人</span><strong id="portalName">—</strong><small id="portalEnglishName">—</small></article>
+            <article><span>教大申请编号</span><strong id="portalApplicantNo">—</strong><small id="portalTerm">—</small></article>
+            <article><span>出生日期</span><strong id="portalDob">—</strong><small>下载电子签证时需要</small></article>
+            <article><span>旅行证件</span><strong id="portalTravelDocument">—</strong><small>下载时需输入号码首四位</small></article>
+          </div>
+
+          <article class="download-card">
+            <div class="download-mark">PDF</div>
+            <div>
+              <p class="eyebrow">NEXT STEP</p>
+              <h2>进入香港入境处官网下载签证</h2>
+              <p>申请获批并完成缴费（如适用）后，可使用申请档案编号、出生日期和旅行证件号码首四位查询下载。</p>
+              <small>找到 MEEN 编号不代表签证已经签发；是否可下载以入境处系统为准。</small>
+            </div>
+            <a href="https://www.gov.hk/tc/apps/immdes2downloadevisa.htm" target="_blank" rel="noopener noreferrer">进入官方页面 ↗</a>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <span>非香港教育大学或香港入境事务处官方产品</span>
+      <span>一次性资料在传递完成后自动删除</span>
+    </footer>
+    <script src="portal.js"></script>
+  </body>
+</html>
