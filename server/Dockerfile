@@ -3,11 +3,11 @@ FROM node:24-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-COPY public ./public
-COPY src ./src
+COPY --chown=node:node public ./public
+COPY --chown=node:node src ./src
 
 USER node
 EXPOSE 3000
