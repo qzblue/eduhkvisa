@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "教大签证进度助手",
+  "version": "1.0.0",
+  "description": "登录香港教育大学申请系统后，在本机读取并以中文显示签证申请资料。",
+  "permissions": ["tabs", "scripting"],
+  "host_permissions": ["https://pappl.eduhk.hk/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "打开签证信息页"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://pappl.eduhk.hk/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

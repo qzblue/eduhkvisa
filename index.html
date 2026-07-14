@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="登录香港教育大学申请系统后，在本机查询并以中文显示签证申请资料。"
+    />
+    <title>教大签证进度助手</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <div class="paper-noise" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="教大签证进度助手首页">
+        <span class="brand-mark" aria-hidden="true">V</span>
+        <span>
+          <strong>签证进度助手</strong>
+          <small>EduHK Visa Status Reader</small>
+        </span>
+      </a>
+      <div class="privacy-mark"><span></span>资料仅在本机处理</div>
+    </header>
+
+    <main>
+      <section id="welcomeView" class="welcome-view">
+        <div class="welcome-copy">
+          <p class="eyebrow">STUDENT VISA · LOCAL READER</p>
+          <h1>把复杂的申请状态，<em>翻译成一句明白的话。</em></h1>
+          <p class="lede">
+            正常登录香港教育大学申请系统后，一键读取你的签证申请编号、审核状态和申请人资料。
+          </p>
+
+          <div class="actions">
+            <button id="queryButton" class="primary-button" type="button">
+              <span>查询我的签证资料</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+            <button id="loginButton" class="text-button" type="button">
+              先去官网登录
+            </button>
+          </div>
+
+          <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+        </div>
+
+        <aside class="passport-card" aria-label="使用步骤">
+          <div class="passport-label">HOW IT WORKS</div>
+          <ol>
+            <li><span>01</span><div><strong>登录官网</strong><small>使用你自己的教大申请账号</small></div></li>
+            <li><span>02</span><div><strong>保持页面开启</strong><small>无需复制 Cookie 或密码</small></div></li>
+            <li><span>03</span><div><strong>返回一键查询</strong><small>资料会翻译为中文显示</small></div></li>
+          </ol>
+          <div class="passport-stamp" aria-hidden="true">LOCAL<br />ONLY</div>
+        </aside>
+      </section>
+
+      <section id="loadingView" class="loading-view" hidden aria-live="polite">
+        <div class="scanner" aria-hidden="true"><span></span></div>
+        <p class="eyebrow">SECURE LOCAL REQUEST</p>
+        <h2>正在向教大系统读取资料…</h2>
+        <p>请保持已登录的官网页面开启。</p>
+      </section>
+
+      <section id="resultView" class="result-view" hidden>
+        <div class="result-heading">
+          <div>
+            <p class="eyebrow">APPLICATION OVERVIEW</p>
+            <h1>你的签证申请资料</h1>
+            <p id="lastUpdated" class="last-updated"></p>
+          </div>
+          <button id="refreshButton" class="refresh-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7" /></svg>
+            重新查询
+          </button>
+        </div>
+
+        <article class="reference-card">
+          <div class="reference-copy">
+            <span class="reference-label">入境处申请参考编号 · IMMD REFERENCE</span>
+            <strong id="immdRefNo">—</strong>
+            <button id="copyReferenceButton" class="copy-button" type="button">复制编号</button>
+          </div>
+          <div class="status-block">
+            <span id="statusDot" class="status-dot"></span>
+            <div>
+              <small>当前申请状态</small>
+              <strong id="statusChinese">—</strong>
+              <code id="statusRaw"></code>
+            </div>
+          </div>
+        </article>
+
+        <div class="content-grid">
+          <article class="info-panel">
+            <div class="panel-title">
+              <span>01</span>
+              <div><h2>申请记录</h2><p>院校与入境处流程资料</p></div>
+            </div>
+            <dl id="masterFields" class="field-list"></dl>
+          </article>
+
+          <article class="info-panel">
+            <div class="panel-title">
+              <span>02</span>
+              <div><h2>申请人资料</h2><p>来自当前登录账号</p></div>
+            </div>
+            <dl id="applicantFields" class="field-list"></dl>
+          </article>
+        </div>
+
+        <article class="evisa-panel">
+          <div class="evisa-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M7 3h13l5 5v21H7zM20 3v6h5M11 15h10M11 20h10M11 25h6" /></svg>
+          </div>
+          <div class="evisa-copy">
+            <p class="eyebrow">HKSAR E-VISA</p>
+            <h2>电子签证查询与下载</h2>
+            <p id="evisaMessage">
+              签证获批并收到通知后，可前往香港政府网站查询及下载电子签证。
+            </p>
+          </div>
+          <a
+            class="evisa-link"
+            href="https://www.gov.hk/tc/residents/immigration/nonpermanent/downloadevisa.htm"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            前往政府网站
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
+          </a>
+        </article>
+
+        <details class="raw-panel">
+          <summary>查看官网返回的原始 JSON</summary>
+          <div class="raw-actions">
+            <button id="copyJsonButton" type="button">复制 JSON</button>
+          </div>
+          <pre id="rawJson"></pre>
+        </details>
+      </section>
+    </main>
+
+    <footer>
+      <p>非香港教育大学或香港入境事务处官方产品。资料与最终结果以官方网站为准。</p>
+      <p>本工具不会要求或保存你的账号密码。</p>
+    </footer>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>

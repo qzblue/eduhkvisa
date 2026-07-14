@@ -1,0 +1,872 @@
+:root {
+  --ink: #142d2b;
+  --ink-soft: #46605c;
+  --paper: #f3efe3;
+  --paper-light: #fbfaf4;
+  --line: rgba(20, 45, 43, 0.16);
+  --jade: #0e6659;
+  --jade-dark: #07453d;
+  --vermilion: #d7502f;
+  --gold: #c79b51;
+  --white: #fffef9;
+  --shadow: 0 28px 80px rgba(18, 42, 39, 0.12);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 85% 8%, rgba(199, 155, 81, 0.13), transparent 26rem),
+    linear-gradient(135deg, #f8f5eb 0%, var(--paper) 56%, #ece7da 100%);
+  font-family: "Noto Sans CJK TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+}
+
+.paper-noise {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.38;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E");
+}
+
+.topbar {
+  width: min(1180px, calc(100% - 48px));
+  height: 96px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  color: var(--paper-light);
+  background: var(--ink);
+  border-radius: 3px 3px 15px 3px;
+  font: 700 25px/1 Georgia, serif;
+  box-shadow: 5px 5px 0 var(--gold);
+}
+
+.brand strong,
+.brand small {
+  display: block;
+}
+
+.brand strong {
+  font-size: 17px;
+  letter-spacing: 0.08em;
+}
+
+.brand small {
+  margin-top: 3px;
+  color: var(--ink-soft);
+  font: 10px/1.2 Georgia, serif;
+  letter-spacing: 0.14em;
+}
+
+.privacy-mark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.privacy-mark span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #2d9b74;
+  box-shadow: 0 0 0 5px rgba(45, 155, 116, 0.11);
+}
+
+main {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.welcome-view {
+  min-height: calc(100vh - 176px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(330px, 0.75fr);
+  align-items: center;
+  gap: clamp(54px, 9vw, 130px);
+  padding: 70px 0 88px;
+}
+
+.welcome-copy {
+  animation: enter-up 0.7s both;
+}
+
+.eyebrow {
+  margin: 0 0 18px;
+  color: var(--vermilion);
+  font: 700 11px/1.4 Georgia, serif;
+  letter-spacing: 0.22em;
+}
+
+.welcome-copy h1,
+.result-heading h1 {
+  margin: 0;
+  font-family: "Noto Serif CJK TC", "Songti TC", STSong, serif;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+
+.welcome-copy h1 {
+  max-width: 760px;
+  font-size: clamp(42px, 6vw, 78px);
+  line-height: 1.12;
+}
+
+.welcome-copy h1 em {
+  display: block;
+  margin-top: 12px;
+  color: var(--jade);
+  font-style: normal;
+}
+
+.lede {
+  max-width: 650px;
+  margin: 30px 0 0;
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.primary-button,
+.refresh-button,
+.copy-button,
+.raw-actions button {
+  border: 0;
+  cursor: pointer;
+}
+
+.primary-button {
+  min-height: 58px;
+  padding: 0 24px 0 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  color: var(--white);
+  background: var(--jade);
+  border-radius: 2px 2px 18px 2px;
+  box-shadow: 9px 9px 0 var(--ink);
+  font-weight: 700;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.primary-button:hover {
+  transform: translate(3px, 3px);
+  background: var(--jade-dark);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.primary-button:active {
+  transform: translate(7px, 7px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.primary-button svg,
+.refresh-button svg,
+.evisa-link svg {
+  width: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.text-button {
+  padding: 9px 0;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.notice {
+  max-width: 670px;
+  margin-top: 26px;
+  padding: 14px 17px;
+  color: #7a3422;
+  background: rgba(215, 80, 47, 0.08);
+  border-left: 3px solid var(--vermilion);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.passport-card {
+  position: relative;
+  min-height: 460px;
+  padding: 45px 40px;
+  overflow: hidden;
+  color: #edf4ee;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    var(--ink);
+  background-size: 22px 22px;
+  border-radius: 4px 4px 48px 4px;
+  box-shadow: var(--shadow);
+  animation: enter-up 0.7s 0.12s both;
+}
+
+.passport-card::before,
+.passport-card::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(199, 155, 81, 0.28);
+  border-radius: 50%;
+}
+
+.passport-card::before {
+  width: 250px;
+  height: 250px;
+  right: -110px;
+  top: -110px;
+}
+
+.passport-card::after {
+  width: 190px;
+  height: 190px;
+  right: -80px;
+  top: -80px;
+}
+
+.passport-label {
+  color: var(--gold);
+  font: 700 11px Georgia, serif;
+  letter-spacing: 0.2em;
+}
+
+.passport-card ol {
+  position: relative;
+  z-index: 1;
+  margin: 50px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.passport-card li {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.passport-card li > span {
+  color: var(--gold);
+  font: italic 20px Georgia, serif;
+}
+
+.passport-card strong,
+.passport-card small {
+  display: block;
+}
+
+.passport-card strong {
+  margin-bottom: 6px;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+}
+
+.passport-card small {
+  color: rgba(237, 244, 238, 0.61);
+  font-size: 12px;
+}
+
+.passport-stamp {
+  position: absolute;
+  right: 35px;
+  bottom: 25px;
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: rgba(215, 80, 47, 0.7);
+  border: 2px solid rgba(215, 80, 47, 0.58);
+  border-radius: 50%;
+  transform: rotate(-11deg);
+  font: 700 11px/1.35 Georgia, serif;
+  letter-spacing: 0.14em;
+}
+
+.loading-view {
+  min-height: calc(100vh - 176px);
+  padding: 150px 20px;
+  text-align: center;
+}
+
+.loading-view h2 {
+  margin: 12px 0;
+  font-family: "Noto Serif CJK TC", "Songti TC", STSong, serif;
+  font-size: clamp(30px, 5vw, 50px);
+}
+
+.loading-view > p:last-child {
+  color: var(--ink-soft);
+}
+
+.scanner {
+  position: relative;
+  width: 112px;
+  height: 72px;
+  margin: 0 auto 38px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.scanner::before {
+  content: "VISA";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(14, 102, 89, 0.55);
+  font: 700 13px Georgia, serif;
+  letter-spacing: 0.18em;
+}
+
+.scanner span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--vermilion);
+  box-shadow: 0 0 14px var(--vermilion);
+  animation: scan 1.4s ease-in-out infinite alternate;
+}
+
+.result-view {
+  padding: 72px 0 90px;
+  animation: enter-up 0.55s both;
+}
+
+.result-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 34px;
+}
+
+.result-heading h1 {
+  font-size: clamp(34px, 5vw, 58px);
+}
+
+.last-updated {
+  margin: 12px 0 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.refresh-button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  transition: background 160ms ease;
+}
+
+.refresh-button:hover {
+  background: var(--white);
+}
+
+.refresh-button svg {
+  width: 17px;
+}
+
+.reference-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.4fr 0.6fr;
+  overflow: hidden;
+  color: var(--white);
+  background: var(--ink);
+  border-radius: 4px 4px 34px 4px;
+  box-shadow: var(--shadow);
+}
+
+.reference-card::after {
+  content: "V";
+  position: absolute;
+  right: 28%;
+  bottom: -85px;
+  color: rgba(255, 255, 255, 0.025);
+  font: 700 250px/1 Georgia, serif;
+  pointer-events: none;
+}
+
+.reference-copy,
+.status-block {
+  position: relative;
+  z-index: 1;
+  padding: clamp(30px, 5vw, 52px);
+}
+
+.reference-label {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--gold);
+  font: 700 10px Georgia, serif;
+  letter-spacing: 0.18em;
+}
+
+#immdRefNo {
+  display: inline-block;
+  margin-right: 14px;
+  font: 700 clamp(27px, 4.2vw, 52px)/1.15 Georgia, "Times New Roman", serif;
+  letter-spacing: 0.035em;
+  word-break: break-word;
+}
+
+.copy-button {
+  padding: 7px 10px;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-block {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.055);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #d9aa51;
+  box-shadow: 0 0 0 7px rgba(217, 170, 81, 0.13);
+}
+
+.status-dot.complete {
+  background: #52be8a;
+  box-shadow: 0 0 0 7px rgba(82, 190, 138, 0.13);
+}
+
+.status-dot.alert {
+  background: #ec745a;
+  box-shadow: 0 0 0 7px rgba(236, 116, 90, 0.13);
+}
+
+.status-block small,
+.status-block strong,
+.status-block code {
+  display: block;
+}
+
+.status-block small {
+  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.status-block strong {
+  font-size: 17px;
+}
+
+.status-block code {
+  max-width: 260px;
+  margin-top: 8px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.info-panel {
+  padding: clamp(25px, 4vw, 38px);
+  background: rgba(255, 254, 249, 0.72);
+  border: 1px solid rgba(20, 45, 43, 0.1);
+  border-radius: 3px 3px 24px 3px;
+}
+
+.panel-title {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-title > span {
+  color: var(--vermilion);
+  font: italic 23px Georgia, serif;
+}
+
+.panel-title h2,
+.panel-title p {
+  margin: 0;
+}
+
+.panel-title h2 {
+  font-family: "Noto Serif CJK TC", "Songti TC", STSong, serif;
+  font-size: 21px;
+}
+
+.panel-title p {
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.field-list {
+  margin: 0;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: minmax(115px, 0.75fr) minmax(0, 1.25fr);
+  gap: 22px;
+  padding: 16px 0;
+  border-bottom: 1px dashed rgba(20, 45, 43, 0.12);
+}
+
+.field-row:last-child {
+  border-bottom: 0;
+}
+
+.field-row dt {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.field-row dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  word-break: break-word;
+}
+
+.evisa-panel {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+  margin-top: 22px;
+  padding: 30px 34px;
+  color: #f9f5e8;
+  background: var(--jade);
+  border-radius: 3px 3px 26px 3px;
+}
+
+.evisa-icon {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+}
+
+.evisa-icon svg {
+  width: 32px;
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.evisa-copy .eyebrow {
+  margin-bottom: 6px;
+  color: #e7c57c;
+}
+
+.evisa-copy h2,
+.evisa-copy p {
+  margin: 0;
+}
+
+.evisa-copy h2 {
+  font-family: "Noto Serif CJK TC", "Songti TC", STSong, serif;
+  font-size: 22px;
+}
+
+.evisa-copy p:last-child {
+  margin-top: 7px;
+  color: rgba(249, 245, 232, 0.69);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.evisa-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 17px;
+  color: var(--ink);
+  background: var(--paper-light);
+  border-radius: 2px 2px 12px 2px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.evisa-link svg {
+  width: 17px;
+}
+
+.raw-panel {
+  margin-top: 22px;
+  padding: 20px 22px;
+  background: rgba(255, 254, 249, 0.55);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.raw-panel summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.raw-actions {
+  margin-top: 18px;
+  text-align: right;
+}
+
+.raw-actions button {
+  padding: 7px 11px;
+  color: var(--ink);
+  background: var(--paper);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.raw-panel pre {
+  max-height: 440px;
+  margin: 12px 0 0;
+  padding: 20px;
+  overflow: auto;
+  color: #dce9df;
+  background: #102624;
+  border-radius: 3px;
+  font: 12px/1.7 Consolas, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+footer {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 30px 0 42px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+
+footer p {
+  margin: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(215, 80, 47, 0.45);
+  outline-offset: 4px;
+}
+
+@keyframes enter-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scan {
+  from { top: 12px; }
+  to { top: 58px; }
+}
+
+@media (max-width: 860px) {
+  .welcome-view,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-view {
+    gap: 55px;
+  }
+
+  .passport-card {
+    min-height: auto;
+  }
+
+  .reference-card {
+    grid-template-columns: 1fr;
+  }
+
+  .status-block {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 0;
+  }
+
+  .evisa-panel {
+    grid-template-columns: auto 1fr;
+  }
+
+  .evisa-link {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 580px) {
+  .topbar,
+  main,
+  footer {
+    width: min(100% - 30px, 1180px);
+  }
+
+  .topbar {
+    height: 80px;
+  }
+
+  .privacy-mark {
+    display: none;
+  }
+
+  .welcome-view {
+    padding: 48px 0 70px;
+  }
+
+  .welcome-copy h1 {
+    font-size: 40px;
+  }
+
+  .actions,
+  .result-heading,
+  footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .primary-button {
+    justify-content: space-between;
+  }
+
+  .text-button {
+    align-self: flex-start;
+  }
+
+  .passport-card {
+    padding: 38px 25px 100px;
+  }
+
+  .result-view {
+    padding-top: 48px;
+  }
+
+  .reference-copy,
+  .status-block {
+    padding: 28px 24px;
+  }
+
+  #immdRefNo {
+    display: block;
+    margin: 0 0 17px;
+    font-size: 29px;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .field-row dd {
+    text-align: left;
+  }
+
+  .evisa-panel {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+  }
+
+  .evisa-icon {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
