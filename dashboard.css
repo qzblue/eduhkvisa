@@ -177,8 +177,7 @@ main {
 
 .primary-button,
 .refresh-button,
-.copy-button,
-.raw-actions button {
+.copy-button {
   border: 0;
   cursor: pointer;
 }
@@ -431,8 +430,9 @@ main {
 
 .reference-card {
   position: relative;
-  display: grid;
-  grid-template-columns: 1.4fr 0.6fr;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   overflow: hidden;
   color: var(--white);
   background: var(--ink);
@@ -450,8 +450,7 @@ main {
   pointer-events: none;
 }
 
-.reference-copy,
-.status-block {
+.reference-copy {
   position: relative;
   z-index: 1;
   padding: clamp(30px, 5vw, 52px);
@@ -482,56 +481,47 @@ main {
   font-size: 12px;
 }
 
-.status-block {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: rgba(255, 255, 255, 0.055);
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.status-dot {
-  width: 12px;
-  height: 12px;
+.reference-seal {
+  position: relative;
+  z-index: 1;
+  width: 116px;
+  height: 116px;
+  margin-right: clamp(28px, 5vw, 58px);
   flex: 0 0 auto;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  color: var(--gold);
+  border: 1px solid rgba(199, 155, 81, 0.48);
   border-radius: 50%;
-  background: #d9aa51;
-  box-shadow: 0 0 0 7px rgba(217, 170, 81, 0.13);
+  transform: rotate(-8deg);
 }
 
-.status-dot.complete {
-  background: #52be8a;
-  box-shadow: 0 0 0 7px rgba(82, 190, 138, 0.13);
+.reference-seal::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px dashed rgba(199, 155, 81, 0.36);
+  border-radius: inherit;
 }
 
-.status-dot.alert {
-  background: #ec745a;
-  box-shadow: 0 0 0 7px rgba(236, 116, 90, 0.13);
-}
-
-.status-block small,
-.status-block strong,
-.status-block code {
+.reference-seal span,
+.reference-seal small {
+  position: relative;
   display: block;
+  font-family: Georgia, serif;
 }
 
-.status-block small {
-  margin-bottom: 5px;
-  color: rgba(255, 255, 255, 0.55);
+.reference-seal span {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 
-.status-block strong {
-  font-size: 17px;
-}
-
-.status-block code {
-  max-width: 260px;
-  margin-top: 8px;
-  overflow: hidden;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 9px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.reference-seal small {
+  margin-top: 4px;
+  font-size: 8px;
+  letter-spacing: 0.14em;
 }
 
 .content-grid {
@@ -675,46 +665,6 @@ main {
   width: 17px;
 }
 
-.raw-panel {
-  margin-top: 22px;
-  padding: 20px 22px;
-  background: rgba(255, 254, 249, 0.55);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-}
-
-.raw-panel summary {
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.raw-actions {
-  margin-top: 18px;
-  text-align: right;
-}
-
-.raw-actions button {
-  padding: 7px 11px;
-  color: var(--ink);
-  background: var(--paper);
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-.raw-panel pre {
-  max-height: 440px;
-  margin: 12px 0 0;
-  padding: 20px;
-  overflow: auto;
-  color: #dce9df;
-  background: #102624;
-  border-radius: 3px;
-  font: 12px/1.7 Consolas, monospace;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
 footer {
   width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
@@ -762,15 +712,6 @@ footer p {
 
   .passport-card {
     min-height: auto;
-  }
-
-  .reference-card {
-    grid-template-columns: 1fr;
-  }
-
-  .status-block {
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    border-left: 0;
   }
 
   .evisa-panel {
@@ -829,9 +770,12 @@ footer p {
     padding-top: 48px;
   }
 
-  .reference-copy,
-  .status-block {
+  .reference-copy {
     padding: 28px 24px;
+  }
+
+  .reference-seal {
+    display: none;
   }
 
   #immdRefNo {

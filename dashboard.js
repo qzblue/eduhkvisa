@@ -10,30 +10,11 @@ const elements = {
   loginButton: document.querySelector("#loginButton"),
   refreshButton: document.querySelector("#refreshButton"),
   copyReferenceButton: document.querySelector("#copyReferenceButton"),
-  copyJsonButton: document.querySelector("#copyJsonButton"),
   immdRefNo: document.querySelector("#immdRefNo"),
-  statusChinese: document.querySelector("#statusChinese"),
-  statusRaw: document.querySelector("#statusRaw"),
-  statusDot: document.querySelector("#statusDot"),
   masterFields: document.querySelector("#masterFields"),
   applicantFields: document.querySelector("#applicantFields"),
   lastUpdated: document.querySelector("#lastUpdated"),
-  evisaMessage: document.querySelector("#evisaMessage"),
-  rawJson: document.querySelector("#rawJson")
-};
-
-const statusTranslations = {
-  PENDING_FOR_IMMD_N_ACADEMIC_VERIFICATION: "等待入境处及院校审核",
-  PENDING_FOR_IMMD_VERIFICATION: "等待入境处审核",
-  PENDING_FOR_ACADEMIC_VERIFICATION: "等待院校审核",
-  PENDING: "等待处理",
-  PROCESSING: "处理中",
-  SUBMITTED: "已提交",
-  VERIFIED: "资料已核验",
-  APPROVED: "已批准",
-  COMPLETED: "已完成",
-  REJECTED: "已退回／未获通过",
-  WITHDRAWN: "已撤回"
+  evisaMessage: document.querySelector("#evisaMessage")
 };
 
 const maritalTranslations = {
@@ -58,9 +39,6 @@ elements.refreshButton.addEventListener("click", queryVisaDetail);
 elements.loginButton.addEventListener("click", openLoginPage);
 elements.copyReferenceButton.addEventListener("click", () => {
   copyText(currentData?.masterDetail?.immdRefNo, elements.copyReferenceButton);
-});
-elements.copyJsonButton.addEventListener("click", () => {
-  copyText(JSON.stringify(currentData, null, 2), elements.copyJsonButton);
 });
 
 if (!isExtensionPage()) {
@@ -112,20 +90,15 @@ async function openLoginPage() {
 function renderResult(data, fetchedAt) {
   const master = data.masterDetail || {};
   const applicant = data.applicantDetail || {};
-  const status = master.status || "UNKNOWN";
-  const statusInfo = translateStatus(status);
   const uploadedCount = Object.keys(data.uploadedDocuments || {}).length;
   const requiredCount = (data.requiredDocuments || []).filter(
     (document) => document.isRequired
   ).length;
 
   elements.immdRefNo.textContent = displayValue(master.immdRefNo);
-  elements.statusChinese.textContent = statusInfo.label;
-  elements.statusRaw.textContent = status;
-  elements.statusDot.className = `status-dot ${statusInfo.tone}`.trim();
   elements.lastUpdated.textContent = `本次读取：${formatDateTime(fetchedAt)}`;
-  elements.evisaMessage.textContent = buildEvisaMessage(statusInfo.tone);
-  elements.rawJson.textContent = JSON.stringify(data, null, 2);
+  elements.evisaMessage.textContent =
+    "请进入香港入境处官方网站，使用上方签证编号查询并下载你的签证。";
 
   renderFields(elements.masterFields, [
     ["入学学期", formatTerm(master.termCode)],
@@ -167,34 +140,6 @@ function renderFields(container, fields) {
     row.append(term, description);
     container.append(row);
   });
-}
-
-function translateStatus(status) {
-  const normalized = String(status || "UNKNOWN").toUpperCase();
-  const label =
-    statusTranslations[normalized] ||
-    normalized
-      .split("_")
-      .filter(Boolean)
-      .join(" ");
-
-  let tone = "";
-  if (/(APPROVED|COMPLETED|VERIFIED)/.test(normalized)) tone = "complete";
-  if (/(REJECTED|WITHDRAWN|FAILED|CANCELLED)/.test(normalized)) tone = "alert";
-
-  return { label, tone };
-}
-
-function buildEvisaMessage(tone) {
-  if (tone === "complete") {
-    return "系统显示申请已完成或获批。你可以前往香港政府网站查询及下载电子签证；最终可下载状态以入境事务处为准。";
-  }
-
-  if (tone === "alert") {
-    return "当前状态可能需要你先处理申请事项。申请获批并收到通知后，可前往香港政府网站查询及下载电子签证。";
-  }
-
-  return "当前申请仍在处理中。获批并收到通知后，可前往香港政府网站查询及下载电子签证。";
 }
 
 function formatTerm(value) {

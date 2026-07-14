@@ -27,9 +27,9 @@
       <section id="welcomeView" class="welcome-view">
         <div class="welcome-copy">
           <p class="eyebrow">STUDENT VISA · LOCAL READER</p>
-          <h1>把复杂的申请状态，<em>翻译成一句明白的话。</em></h1>
+          <h1>找到你的签证编号，<em>下一步清楚明白。</em></h1>
           <p class="lede">
-            正常登录香港教育大学申请系统后，一键读取你的签证申请编号、审核状态和申请人资料。
+            正常登录香港教育大学申请系统后，一键读取你的签证编号和申请人资料。
           </p>
 
           <div class="actions">
@@ -80,17 +80,13 @@
 
         <article class="reference-card">
           <div class="reference-copy">
-            <span class="reference-label">入境处申请参考编号 · IMMD REFERENCE</span>
+            <span class="reference-label">这是你的签证编号 · VISA REFERENCE NUMBER</span>
             <strong id="immdRefNo">—</strong>
             <button id="copyReferenceButton" class="copy-button" type="button">复制编号</button>
           </div>
-          <div class="status-block">
-            <span id="statusDot" class="status-dot"></span>
-            <div>
-              <small>当前申请状态</small>
-              <strong id="statusChinese">—</strong>
-              <code id="statusRaw"></code>
-            </div>
+          <div class="reference-seal" aria-hidden="true">
+            <span>VISA</span>
+            <small>REFERENCE</small>
           </div>
         </article>
 
@@ -118,9 +114,9 @@
           </div>
           <div class="evisa-copy">
             <p class="eyebrow">HKSAR E-VISA</p>
-            <h2>电子签证查询与下载</h2>
+            <h2>请下载你的电子签证</h2>
             <p id="evisaMessage">
-              签证获批并收到通知后，可前往香港政府网站查询及下载电子签证。
+              请进入香港入境处官方网站，使用上方签证编号查询并下载你的签证。
             </p>
           </div>
           <a
@@ -129,18 +125,10 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            前往政府网站
+            进入入境处官网并下载
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
           </a>
         </article>
-
-        <details class="raw-panel">
-          <summary>查看官网返回的原始 JSON</summary>
-          <div class="raw-actions">
-            <button id="copyJsonButton" type="button">复制 JSON</button>
-          </div>
-          <pre id="rawJson"></pre>
-        </details>
       </section>
     </main>
 
