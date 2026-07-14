@@ -1,0 +1,3 @@
+# Windows CMD must keep CRLF in GitHub ZIP/raw downloads.
+*.cmd -text
+*.bat -text
