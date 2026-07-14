@@ -1,3 +1,4 @@
 # Windows CMD must keep CRLF in GitHub ZIP/raw downloads.
 *.cmd -text
 *.bat -text
+start-visa-helper.ps1 -text

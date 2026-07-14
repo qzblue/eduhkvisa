@@ -39,7 +39,7 @@
 
 #### Windows 一键启动
 
-进入解压后的文件夹，双击 `启动签证助手.cmd`。浏览器会自动打开教大登录页面。
+进入解压后的文件夹，双击 `启动签证助手.cmd`。它会调用同目录的 `start-visa-helper.ps1`，然后自动打开浏览器和教大登录页面。请保持这两个文件在同一文件夹内。
 
 #### Chrome 手动安装
 
@@ -181,6 +181,7 @@ index.html             插件信息页面
 dashboard.css          插件页面样式
 dashboard.js           插件资料整理及网站同步
 启动签证助手.cmd       Windows 一键启动插件
+start-visa-helper.ps1  可靠处理中文提示与浏览器启动
 
 server/
   src/server.js        多用户 API、会话与一次性连接码
