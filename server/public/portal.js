@@ -47,7 +47,29 @@ elements.copyVisaNumberButton.addEventListener("click", () =>
   copyText(currentVisaNumber, elements.copyVisaNumberButton)
 );
 
+initializeReveal();
 initialize();
+
+function initializeReveal() {
+  const items = [...document.querySelectorAll("[data-reveal]")];
+  if (!("IntersectionObserver" in window)) {
+    items.forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
+
+  document.documentElement.classList.add("reveal-ready");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -24px" }
+  );
+  items.forEach((item) => observer.observe(item));
+}
 setupRevealMotion();
 
 async function initialize() {
@@ -194,6 +216,7 @@ function showAuth() {
   elements.portalView.hidden = true;
   elements.userMenu.hidden = true;
   elements.privacyBadge.hidden = false;
+  revealWithin(elements.authView);
 }
 
 function showPortal(user) {
@@ -202,6 +225,15 @@ function showPortal(user) {
   elements.userMenu.hidden = false;
   elements.privacyBadge.hidden = true;
   elements.userEmail.textContent = user.email;
+  revealWithin(elements.portalView);
+}
+
+function revealWithin(container) {
+  requestAnimationFrame(() => {
+    container.querySelectorAll("[data-reveal]").forEach((item) =>
+      item.classList.add("is-visible")
+    );
+  });
 }
 
 function resetQuery() {

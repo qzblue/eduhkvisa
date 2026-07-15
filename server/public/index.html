@@ -12,8 +12,7 @@
     <link rel="stylesheet" href="portal.css" />
   </head>
   <body>
-    <div class="paper-grain" aria-hidden="true"></div>
-    <div class="security-thread" aria-hidden="true"><span>BLUEVISA · SECURE LOOKUP · BLUEVISA · SECURE LOOKUP</span></div>
+    <div class="top-rule" aria-hidden="true"></div>
 
     <header class="site-header">
       <a class="brand" href="/" aria-label="BlueVisa 首页">
@@ -52,11 +51,11 @@
     <main>
       <section id="authView" class="auth-view" hidden>
         <div class="hero-copy" data-reveal>
-          <div class="public-label"><span>PUBLIC INTEREST PROJECT</span><b>公益服务</b></div>
-          <p class="eyebrow">FOR EDHK STUDENT VISA APPLICANTS</p>
-          <h1>提前看见<br />你的 <em>eVisa</em><br class="mobile-break" /> 路径。</h1>
+          <div class="public-label"><span>由 Blue 发起的开源公益项目</span><b>免费使用</b></div>
+          <p class="eyebrow">香港教育大学学生签证辅助查询</p>
+          <h1>更清楚地找到<br />你的 <em>eVisa</em><br class="mobile-only" /> 申请编号</h1>
           <p class="hero-lead">
-            为香港教育大学学生而做的申请档案编号预查工具。少一点信息差，多一点等待签证时的确定感。
+            为香港教育大学学生提供更简单的申请档案编号预查与电子签证下载指引。
           </p>
 
           <div class="trust-ledger" aria-label="服务保障">
@@ -67,9 +66,9 @@
         </div>
 
         <aside class="auth-shell" data-reveal>
-          <div class="document-index"><span>ACCESS</span><strong>01</strong></div>
+          <div class="document-index"><span>账户</span><strong>01</strong></div>
           <div class="auth-shell-head">
-            <p>BLUEVISA SECURE ACCESS</p>
+            <p>安全访问</p>
             <h2>进入查询空间</h2>
             <small>本站账号仅用于隔离不同学生的网站会话。</small>
           </div>
@@ -103,21 +102,21 @@
       <section id="portalView" class="portal-view" hidden>
         <header class="workspace-head" data-reveal>
           <div>
-            <div class="public-label"><span>BLUEVISA LOOKUP DESK</span><b>查询工作台</b></div>
-            <p class="eyebrow">THE REFERENCE BEFORE THE EVISA</p>
-            <h1>找到通往 eVisa 的<br /><em>关键编号</em></h1>
+            <div class="public-label"><span>个人查询工作台</span><b>已登录</b></div>
+            <p class="eyebrow">eVisa 申请档案编号预查</p>
+            <h1>查询你的 eVisa<br /><em>申请档案编号</em></h1>
           </div>
           <div class="session-seal">
-            <span>SESSION</span>
-            <strong>PRIVATE</strong>
+            <span>当前会话</span>
+            <strong>独立</strong>
             <small><i></i>独立加密会话</small>
           </div>
         </header>
 
         <section id="guidePanel" class="lookup-desk" data-reveal>
           <aside class="lookup-guide">
-            <div class="document-index light"><span>LOOKUP</span><strong>01</strong></div>
-            <p class="eyebrow">HOW IT WORKS</p>
+            <div class="document-index light"><span>查询</span><strong>01</strong></div>
+            <p class="eyebrow">查询方式</p>
             <h2>一次提交，<br />即时返回。</h2>
             <ol class="steps">
               <li><span>01</span><div><strong>填写本人资料</strong><p>输入教大签证系统要求的登录字段。</p></div></li>
@@ -129,7 +128,7 @@
 
           <form id="officialLoginForm" class="official-form" autocomplete="off">
             <div class="form-title">
-              <div><span>OFFICIAL CREDENTIALS</span><h2>教大签证系统登录资料</h2></div>
+              <div><span>教大官网登录资料</span><h2>填写查询资料</h2></div>
               <a href="https://pappl.eduhk.hk/VMS/admission" target="_blank" rel="noopener noreferrer">打开教大官网 ↗</a>
             </div>
 
@@ -147,7 +146,7 @@
             </label>
 
             <div class="form-action-row">
-              <p><span>NO DATA AT REST</span>查询结束后，完整身份证明号码会同时从本页面清除。</p>
+              <p><span>不持久保存</span>查询结束后，完整身份证明号码会同时从本页面清除。</p>
               <button id="createQueryButton" class="primary-button" type="submit"><span>连接官网并查询</span><i>↗</i></button>
             </div>
             <p id="guideNotice" class="form-notice centered" role="status"></p>
@@ -156,7 +155,7 @@
 
         <section id="queryingPanel" class="querying-panel" hidden>
           <div class="query-orbit" aria-hidden="true"><span>MEEN</span><i></i></div>
-          <p class="eyebrow">ENCRYPTED OFFICIAL REQUEST</p>
+          <p class="eyebrow">正在进行加密查询</p>
           <h2>正在连接教大签证系统</h2>
           <p>建立一次性会话、核验登录资料并读取申请档案编号。</p>
           <div class="waiting-line"><i></i><span><strong>不写入数据库或日志</strong><small>通常数秒即可完成</small></span></div>
@@ -166,7 +165,7 @@
 
         <section id="resultPanel" class="result-panel" hidden>
           <div class="result-topline">
-            <div><p class="eyebrow">REFERENCE LOCATED</p><h2>你的申请档案编号已找到</h2></div>
+            <div><p class="eyebrow">查询成功</p><h2>你的申请档案编号已找到</h2></div>
             <button id="newQueryButton" class="quiet-button dark" type="button">重新查询</button>
           </div>
 
@@ -187,17 +186,17 @@
 
           <article class="download-callout">
             <div class="download-index"><span>NEXT</span><strong>02</strong></div>
-            <div><p class="eyebrow">OFFICIAL DOWNLOAD</p><h2>下一步，前往香港入境处官网下载 eVisa</h2><p>申请获批并完成缴费（如适用）后，使用申请档案编号、出生日期和旅行证件号码首四位查询下载。</p><small>找到 MEEN 编号不等于签证已经签发；是否可下载以入境处系统为准。</small></div>
+            <div><p class="eyebrow">下一步</p><h2>前往香港入境处官网下载 eVisa</h2><p>申请获批并完成缴费（如适用）后，使用申请档案编号、出生日期和旅行证件号码首四位查询下载。</p><small>找到 MEEN 编号不等于签证已经签发；是否可下载以入境处系统为准。</small></div>
             <a href="https://www.gov.hk/tc/apps/immdes2downloadevisa.htm" target="_blank" rel="noopener noreferrer">进入政府官网 <b>↗</b></a>
           </article>
         </section>
       </section>
 
       <section id="purpose" class="purpose-section public-section" data-reveal>
-        <div class="section-rail"><span>02</span><small>WHY BLUEVISA</small></div>
+        <div class="section-rail"><span>02</span><small>项目初衷</small></div>
         <div class="purpose-copy">
-          <p class="eyebrow">THE REASON BEHIND THIS PROJECT</p>
-          <h2>等待签证已经够漫长，<br />查询不该再让人困惑。</h2>
+          <p class="eyebrow">项目初衷</p>
+          <h2>把复杂的查询步骤，<br />整理得更简单。</h2>
           <div class="purpose-columns">
             <p>BlueVisa 的起点很简单：许多同学已经完成材料递交，却不知道 MEEN 开头的编号是什么、在哪里找到，以及拿到编号后应该去哪里下载 eVisa。</p>
             <p>作者 Blue 希望用一个清楚、克制、公开透明的工具，把散落在系统中的本人信息整理成下一步能真正使用的指引。它是一项免费公益服务，也会一直保留开源版本。</p>
@@ -208,10 +207,10 @@
       </section>
 
       <section id="privacy" class="privacy-section public-section" data-reveal>
-        <div class="section-rail inverse"><span>03</span><small>PRIVACY</small></div>
+        <div class="section-rail inverse"><span>03</span><small>隐私机制</small></div>
         <div class="privacy-heading">
-          <p class="eyebrow">EPHEMERAL BY DESIGN</p>
-          <h2>查询会经过，<br /><em>资料不留下。</em></h2>
+          <p class="eyebrow">隐私机制</p>
+          <h2>只做查询，<br /><em>不保存签证资料。</em></h2>
           <p>BlueVisa 采用一次性服务端会话。教大登录字段与查询结果只在当前请求期间存在，不建立签证资料数据库。</p>
         </div>
         <div class="privacy-matrix">
@@ -224,15 +223,15 @@
 
       <section class="open-source-section public-section" data-reveal>
         <div class="github-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 .8a11.4 11.4 0 0 0-3.6 22.2c.6.1.8-.2.8-.5v-2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.6.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.5.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.8 5.4-5.5 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.4 11.4 0 0 0 12 .8Z"/></svg></div>
-        <div><p class="eyebrow">OPEN SOURCE / PUBLIC REVIEW</p><h2>代码公开，才能让<br />“不保存”这句话被检查。</h2><p>查询逻辑、字段白名单、部署方式和本机插件均已在 GitHub 公开。欢迎审阅、提出问题或参与改进。</p></div>
+        <div><p class="eyebrow">开源项目</p><h2>代码公开，欢迎检查。</h2><p>查询逻辑、字段白名单、部署方式和本机插件均已在 GitHub 公开。欢迎审阅、提出问题或参与改进。</p></div>
         <a class="source-button" href="https://github.com/qzblue/eduhkvisa" target="_blank" rel="noopener noreferrer"><span>查看 GitHub 项目</span><b>↗</b></a>
       </section>
 
       <section id="disclaimer" class="disclaimer-section public-section" data-reveal>
-        <div class="section-rail"><span>04</span><small>LEGAL</small></div>
+        <div class="section-rail"><span>04</span><small>免责声明</small></div>
         <div>
-          <p class="eyebrow">IMPORTANT DISCLAIMER</p>
-          <h2>使用前，请了解这些边界。</h2>
+          <p class="eyebrow">免责声明</p>
+          <h2>这是一项非官方公益查询服务。</h2>
           <div class="disclaimer-grid">
             <p><strong>非官方服务</strong>BlueVisa 不是香港教育大学、香港特别行政区政府或入境事务处的官方网站、代理或合作项目。</p>
             <p><strong>结果仅供便捷查阅</strong>本站只整理用户本人通过教大系统可访问的资料，不参与审批、签发、缴费或修改任何申请。</p>
