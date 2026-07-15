@@ -2,7 +2,7 @@
 
 帮助香港教育大学学生读取入境处申请档案编号（`immdRefNo`）并用简体中文展示的开源项目。
 
-- 网站版：<https://eduhkvisa.cust.edu.kg>
+- 网站版：<https://eduhk.tracktwvisa.com>（备用入口：<https://eduhkvisa.cust.edu.kg>）
 - 本机插件版：仓库根目录中的 Chrome／Edge 扩展
 
 > 本项目不是香港教育大学或香港入境事务处的官方产品。所有资料及电子签证签发情况以官方网站为准。
@@ -24,7 +24,7 @@
 
 网站版不需要安装插件。
 
-1. 打开 <https://eduhkvisa.cust.edu.kg>。
+1. 打开 <https://eduhk.tracktwvisa.com>。
 2. 注册签证中心账号。这里设置的是**本站密码**，不是教大密码。
 3. 登录后填写教大签证系统要求的资料：
    - 教大申请编号
@@ -131,6 +131,7 @@ nano .env
 
 ```env
 DOMAIN=eduhkvisa.cust.edu.kg
+EXTRA_DOMAIN=eduhk.tracktwvisa.com
 POSTGRES_PASSWORD=请填写随机长密码
 SESSION_SECRET=请填写至少32位随机字符串
 ALLOW_REGISTRATION=true

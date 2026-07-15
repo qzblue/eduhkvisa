@@ -24,6 +24,7 @@ const environment = z
     PORT: z.coerce.number().int().min(1).max(65535).default(3000),
     DATABASE_URL: z.string().min(1),
     PUBLIC_ORIGIN: z.string().url(),
+    PUBLIC_ORIGINS: z.string().optional(),
     SESSION_SECRET: z.string().min(32),
     ALLOW_REGISTRATION: z.string().default("true"),
     DATABASE_SSL: z.string().default("false")
@@ -31,6 +32,11 @@ const environment = z
   .parse(process.env);
 
 const publicOrigin = environment.PUBLIC_ORIGIN.replace(/\/$/, "");
+const publicOrigins = new Set(
+  (environment.PUBLIC_ORIGINS || publicOrigin)
+    .split(",")
+    .map((origin) => new URL(origin.trim()).origin)
+);
 const isProduction = environment.NODE_ENV === "production";
 const allowRegistration = environment.ALLOW_REGISTRATION.toLowerCase() === "true";
 const pool = new pg.Pool({
@@ -266,7 +272,7 @@ function requireAuth(request, response, next) {
 
 function requireSameOrigin(request, response, next) {
   const origin = request.get("origin");
-  if (origin && origin !== publicOrigin) {
+  if (origin && !publicOrigins.has(origin)) {
     return response.status(403).json({ message: "请求来源不被允许。" });
   }
   next();
