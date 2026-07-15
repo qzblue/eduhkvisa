@@ -3,182 +3,252 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="安全读取并整理香港教育大学学生签证申请档案编号。" />
-    <title>教大签证查询中心</title>
+    <meta name="theme-color" content="#071c28" />
+    <meta
+      name="description"
+      content="BlueVisa 是面向香港教育大学学生的 eVisa 申请档案编号预查公益服务。查询资料只作即时处理，不持久保存。"
+    />
+    <title>BlueVisa｜教大学生 eVisa 预查公益服务</title>
     <link rel="stylesheet" href="portal.css" />
   </head>
   <body>
-    <div class="grain" aria-hidden="true"></div>
+    <div class="paper-grain" aria-hidden="true"></div>
+    <div class="security-thread" aria-hidden="true"><span>BLUEVISA · SECURE LOOKUP · BLUEVISA · SECURE LOOKUP</span></div>
+
     <header class="site-header">
-      <a class="brand" href="/">
-        <span class="brand-mark">V</span>
-        <span><strong>签证查询中心</strong><small>EDUHK VISA READER</small></span>
+      <a class="brand" href="/" aria-label="BlueVisa 首页">
+        <span class="brand-mark" aria-hidden="true"><i>B</i><i>V</i></span>
+        <span class="brand-copy">
+          <strong>BLUEVISA</strong>
+          <small>教大学生 eVisa 预查</small>
+        </span>
       </a>
-      <div id="userMenu" class="user-menu" hidden>
-        <span id="userEmail"></span>
-        <button id="logoutButton" type="button">退出登录</button>
+
+      <nav class="site-nav" aria-label="主要导航">
+        <a href="#purpose">项目初衷</a>
+        <a href="#privacy">隐私机制</a>
+        <a href="#disclaimer">免责声明</a>
+        <a
+          class="github-link"
+          href="https://github.com/qzblue/eduhkvisa"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="在 GitHub 查看 BlueVisa 源代码"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8a11.4 11.4 0 0 0-3.6 22.2c.6.1.8-.2.8-.5v-2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.6.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.5.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.8 5.4-5.5 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.4 11.4 0 0 0 12 .8Z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </nav>
+
+      <div class="header-actions">
+        <div id="privacyBadge" class="privacy-badge"><i></i><span>签证资料零落盘</span></div>
+        <div id="userMenu" class="user-menu" hidden>
+          <span id="userEmail"></span>
+          <button id="logoutButton" type="button">退出</button>
+        </div>
       </div>
-      <div id="privacyBadge" class="privacy-badge"><span></span>签证资料不落盘</div>
     </header>
 
     <main>
       <section id="authView" class="auth-view" hidden>
-        <div class="auth-intro">
-          <p class="eyebrow">A SAFER WAY TO READ YOUR VISA REFERENCE</p>
-          <h1>登录自己的<br /><em>签证信息空间</em></h1>
-          <p>
-            每位学生拥有独立的网站会话。查询时由服务器临时连接教大官网，结果会直接返回给当前页面。
+        <div class="hero-copy" data-reveal>
+          <div class="public-label"><span>PUBLIC INTEREST PROJECT</span><b>公益服务</b></div>
+          <p class="eyebrow">FOR EDHK STUDENT VISA APPLICANTS</p>
+          <h1>提前看见<br />你的 <em>eVisa</em><br class="mobile-break" /> 路径。</h1>
+          <p class="hero-lead">
+            为香港教育大学学生而做的申请档案编号预查工具。少一点信息差，多一点等待签证时的确定感。
           </p>
-          <div class="safety-note">
-            <strong>我们保存什么？</strong>
-            <span>仅保存本站账号的邮箱和密码哈希。教大登录资料、官网 Cookie 和签证查询结果不会写入数据库或日志。</span>
+
+          <div class="trust-ledger" aria-label="服务保障">
+            <div><span>01</span><strong>TLS 加密传输</strong><small>全程 HTTPS</small></div>
+            <div><span>02</span><strong>即时查询</strong><small>不保存签证资料</small></div>
+            <div><span>03</span><strong>源代码公开</strong><small>接受社区审阅</small></div>
           </div>
         </div>
 
-        <div class="auth-card">
-          <div class="auth-tabs">
-            <button id="loginTab" class="active" type="button">登录</button>
-            <button id="registerTab" type="button">注册</button>
+        <aside class="auth-shell" data-reveal>
+          <div class="document-index"><span>ACCESS</span><strong>01</strong></div>
+          <div class="auth-shell-head">
+            <p>BLUEVISA SECURE ACCESS</p>
+            <h2>进入查询空间</h2>
+            <small>本站账号仅用于隔离不同学生的网站会话。</small>
+          </div>
+
+          <div class="auth-tabs" role="tablist" aria-label="账号操作">
+            <button id="loginTab" class="active" type="button" role="tab">登录</button>
+            <button id="registerTab" type="button" role="tab">首次注册</button>
           </div>
 
           <form id="loginForm" class="auth-form">
-            <div class="form-heading"><span>欢迎回来</span><h2>登录签证中心</h2></div>
-            <label>邮箱地址<input name="email" type="email" autocomplete="email" required /></label>
-            <label>网站密码<input name="password" type="password" autocomplete="current-password" minlength="10" required /></label>
-            <button class="solid-button" type="submit">登录</button>
+            <label><span>邮箱地址</span><input name="email" type="email" autocomplete="email" placeholder="name@example.com" required /></label>
+            <label><span>网站密码</span><input name="password" type="password" autocomplete="current-password" minlength="10" placeholder="至少 10 个字符" required /></label>
+            <button class="primary-button" type="submit"><span>安全登录</span><i>↗</i></button>
           </form>
 
           <form id="registerForm" class="auth-form" hidden>
-            <div class="form-heading"><span>第一次使用</span><h2>创建网站账号</h2></div>
-            <label>邮箱地址<input name="email" type="email" autocomplete="email" required /></label>
-            <label>设置网站密码<input name="password" type="password" autocomplete="new-password" minlength="10" required /></label>
-            <small>至少 10 个字符。这里设置的是本站密码，不是教大密码。</small>
-            <button class="solid-button" type="submit">注册并登录</button>
+            <label><span>邮箱地址</span><input name="email" type="email" autocomplete="email" placeholder="name@example.com" required /></label>
+            <label><span>设置网站密码</span><input name="password" type="password" autocomplete="new-password" minlength="10" placeholder="至少 10 个字符" required /></label>
+            <small>这是 BlueVisa 网站密码，不是你的教大密码。</small>
+            <button class="primary-button" type="submit"><span>创建账号并进入</span><i>↗</i></button>
           </form>
           <p id="authNotice" class="form-notice" role="status"></p>
-        </div>
+
+          <div class="auth-assurance">
+            <span aria-hidden="true">◆</span>
+            <p><strong>隐私提示</strong>仅保存网站账号邮箱、密码哈希及登录会话；不持久保存教大登录字段和签证查询结果。</p>
+          </div>
+        </aside>
       </section>
 
       <section id="portalView" class="portal-view" hidden>
-        <div class="portal-heading">
+        <header class="workspace-head" data-reveal>
           <div>
-            <p class="eyebrow">YOUR PRIVATE VISA WORKSPACE</p>
-            <h1>查询我的签证编号</h1>
-            <p>无需安装插件，按教大官网的登录资料填写即可。</p>
+            <div class="public-label"><span>BLUEVISA LOOKUP DESK</span><b>查询工作台</b></div>
+            <p class="eyebrow">THE REFERENCE BEFORE THE EVISA</p>
+            <h1>找到通往 eVisa 的<br /><em>关键编号</em></h1>
           </div>
-          <span class="session-chip"><i></i>你的独立安全会话</span>
-        </div>
+          <div class="session-seal">
+            <span>SESSION</span>
+            <strong>PRIVATE</strong>
+            <small><i></i>独立加密会话</small>
+          </div>
+        </header>
 
-        <section id="guidePanel" class="guide-panel">
-          <div class="direct-status"><i></i><span>服务端临时查询 · 不保存签证资料</span></div>
-          <ol class="steps">
-            <li>
-              <span class="step-number">01</span>
-              <div><strong>填写本人资料</strong><p>使用教大签证系统要求的申请编号、身份证明、出生日期和入学学期。</p></div>
-            </li>
-            <li>
-              <span class="step-number">02</span>
-              <div><strong>服务器临时查询</strong><p>本站代你向教大官方接口登录并读取资料，全程使用加密连接。</p></div>
-            </li>
-            <li>
-              <span class="step-number">03</span>
-              <div><strong>获得 MEEN 编号</strong><p>查询结束立即丢弃教大 Cookie，只在当前页面显示精简结果。</p></div>
-            </li>
-          </ol>
+        <section id="guidePanel" class="lookup-desk" data-reveal>
+          <aside class="lookup-guide">
+            <div class="document-index light"><span>LOOKUP</span><strong>01</strong></div>
+            <p class="eyebrow">HOW IT WORKS</p>
+            <h2>一次提交，<br />即时返回。</h2>
+            <ol class="steps">
+              <li><span>01</span><div><strong>填写本人资料</strong><p>输入教大签证系统要求的登录字段。</p></div></li>
+              <li><span>02</span><div><strong>临时连接官网</strong><p>服务器建立独立教大会话完成查询。</p></div></li>
+              <li><span>03</span><div><strong>获得 MEEN 编号</strong><p>返回精简结果后立即丢弃官网 Cookie。</p></div></li>
+            </ol>
+            <div class="ephemeral-note"><i></i><span><strong>即时处理</strong>签证资料不写入数据库、文件或应用日志。</span></div>
+          </aside>
 
           <form id="officialLoginForm" class="official-form" autocomplete="off">
             <div class="form-title">
-              <div><span>OFFICIAL LOGIN</span><h2>填写教大签证系统登录资料</h2></div>
-              <a href="https://pappl.eduhk.hk/VMS/admission" target="_blank" rel="noopener noreferrer">对照教大官网 ↗</a>
+              <div><span>OFFICIAL CREDENTIALS</span><h2>教大签证系统登录资料</h2></div>
+              <a href="https://pappl.eduhk.hk/VMS/admission" target="_blank" rel="noopener noreferrer">打开教大官网 ↗</a>
             </div>
+
             <div class="official-fields">
-              <label>教大申请编号
-                <input name="applicantNo" type="text" maxlength="9" placeholder="例如 A12345678" required />
-              </label>
-              <label>身份证明类型
-                <select name="idType" required>
-                  <option value="MAINLAND_ID">中国内地居民身份证</option>
-                  <option value="PASSPORT">护照</option>
-                </select>
-              </label>
-              <label>完整身份证明号码
-                <input name="id" type="text" maxlength="30" placeholder="请输入申请时登记的号码" required />
-              </label>
-              <label>出生日期
-                <input name="dob" type="date" required />
-              </label>
-              <label>入学学期
-                <select id="admissionTerm" name="admissionTerm" required>
-                  <option value="">正在读取教大可用学期…</option>
-                </select>
-              </label>
+              <label><span>教大申请编号</span><input name="applicantNo" type="text" maxlength="9" placeholder="例如 A12345678" required /></label>
+              <label><span>身份证明类型</span><select name="idType" required><option value="MAINLAND_ID">中国内地居民身份证</option><option value="PASSPORT">护照</option></select></label>
+              <label><span>完整身份证明号码</span><input name="id" type="text" maxlength="30" placeholder="申请时登记的号码" required /></label>
+              <label><span>出生日期</span><input name="dob" type="date" required /></label>
+              <label class="wide-field"><span>入学学期</span><select id="admissionTerm" name="admissionTerm" required><option value="">正在读取教大可用学期…</option></select></label>
             </div>
+
             <label class="consent-row">
               <input name="consent" type="checkbox" required />
-              <span>我确认查询本人资料，并了解上述登录字段会经本站服务器转交教大官网，但不会被持久保存。</span>
+              <span>我确认查询本人资料，并了解这些字段会经 BlueVisa 服务器转交教大官网进行一次性查询，但不会被持久保存。</span>
             </label>
-            <div class="privacy-explainer">
-              <strong>一次请求，用完即丢弃</strong>
-              <p>本站不会保存身份证明号码、出生日期、教大 Cookie 或签证结果。服务器日志也不会记录请求正文。</p>
+
+            <div class="form-action-row">
+              <p><span>NO DATA AT REST</span>查询结束后，完整身份证明号码会同时从本页面清除。</p>
+              <button id="createQueryButton" class="primary-button" type="submit"><span>连接官网并查询</span><i>↗</i></button>
             </div>
-            <button id="createQueryButton" class="solid-button start-button" type="submit">安全登录并查询</button>
             <p id="guideNotice" class="form-notice centered" role="status"></p>
           </form>
-
-          <p class="plugin-alternative">不想让资料经过服务器？仍可使用<a href="https://github.com/qzblue/eduhkvisa" target="_blank" rel="noopener noreferrer">本机插件版本 ↗</a></p>
         </section>
 
         <section id="queryingPanel" class="querying-panel" hidden>
-          <div class="query-scanner" aria-hidden="true"><span></span></div>
-          <p class="eyebrow">SECURE SERVER REQUEST</p>
-          <h2>正在安全连接教大官网…</h2>
-          <p>服务器正在建立一次性官网会话、登录并读取 MEEN 编号，请不要关闭页面。</p>
-          <div class="waiting-line">
-            <span class="pulse" aria-hidden="true"></span>
-            <div><strong>不会写入数据库或日志</strong><small>通常几秒钟即可完成</small></div>
-          </div>
+          <div class="query-orbit" aria-hidden="true"><span>MEEN</span><i></i></div>
+          <p class="eyebrow">ENCRYPTED OFFICIAL REQUEST</p>
+          <h2>正在连接教大签证系统</h2>
+          <p>建立一次性会话、核验登录资料并读取申请档案编号。</p>
+          <div class="waiting-line"><i></i><span><strong>不写入数据库或日志</strong><small>通常数秒即可完成</small></span></div>
           <p id="queryNotice" class="form-notice" role="status"></p>
-          <button id="backToGuideButton" class="quiet-button" type="button">返回操作说明</button>
+          <button id="backToGuideButton" class="quiet-button" type="button">返回修改资料</button>
         </section>
 
         <section id="resultPanel" class="result-panel" hidden>
           <div class="result-topline">
-            <div><p class="eyebrow">VISA REFERENCE FOUND</p><h2>已找到你的签证编号</h2></div>
-            <button id="newQueryButton" type="button">重新查询</button>
+            <div><p class="eyebrow">REFERENCE LOCATED</p><h2>你的申请档案编号已找到</h2></div>
+            <button id="newQueryButton" class="quiet-button dark" type="button">重新查询</button>
           </div>
 
-          <article class="number-card">
-            <span>入境处申请档案编号</span>
+          <article class="number-document">
+            <div class="number-meta"><span>HKSAR IMMIGRATION REFERENCE</span><small>申请档案编号 / APPLICATION REFERENCE</small></div>
             <strong id="portalImmdRefNo">—</strong>
             <button id="copyVisaNumberButton" type="button">复制编号</button>
             <p id="portalReferenceHelp"></p>
+            <div class="document-stamp" aria-hidden="true"><span>BLUEVISA</span><strong>FOUND</strong></div>
           </article>
 
-          <div class="result-grid">
-            <article><span>申请人</span><strong id="portalName">—</strong><small id="portalEnglishName">—</small></article>
-            <article><span>教大申请编号</span><strong id="portalApplicantNo">—</strong><small id="portalTerm">—</small></article>
-            <article><span>出生日期</span><strong id="portalDob">—</strong><small>下载电子签证时需要</small></article>
-            <article><span>旅行证件</span><strong id="portalTravelDocument">—</strong><small>下载时需输入号码首四位</small></article>
+          <div class="result-ledger">
+            <article><span>01 / 申请人</span><strong id="portalName">—</strong><small id="portalEnglishName">—</small></article>
+            <article><span>02 / 教大申请编号</span><strong id="portalApplicantNo">—</strong><small id="portalTerm">—</small></article>
+            <article><span>03 / 出生日期</span><strong id="portalDob">—</strong><small>下载电子签证时需要</small></article>
+            <article><span>04 / 旅行证件</span><strong id="portalTravelDocument">—</strong><small>下载时需输入号码首四位</small></article>
           </div>
 
-          <article class="download-card">
-            <div class="download-mark">PDF</div>
-            <div>
-              <p class="eyebrow">NEXT STEP</p>
-              <h2>进入香港入境处官网下载签证</h2>
-              <p>申请获批并完成缴费（如适用）后，可使用申请档案编号、出生日期和旅行证件号码首四位查询下载。</p>
-              <small>找到 MEEN 编号不代表签证已经签发；是否可下载以入境处系统为准。</small>
-            </div>
-            <a href="https://www.gov.hk/tc/apps/immdes2downloadevisa.htm" target="_blank" rel="noopener noreferrer">进入官方页面 ↗</a>
+          <article class="download-callout">
+            <div class="download-index"><span>NEXT</span><strong>02</strong></div>
+            <div><p class="eyebrow">OFFICIAL DOWNLOAD</p><h2>下一步，前往香港入境处官网下载 eVisa</h2><p>申请获批并完成缴费（如适用）后，使用申请档案编号、出生日期和旅行证件号码首四位查询下载。</p><small>找到 MEEN 编号不等于签证已经签发；是否可下载以入境处系统为准。</small></div>
+            <a href="https://www.gov.hk/tc/apps/immdes2downloadevisa.htm" target="_blank" rel="noopener noreferrer">进入政府官网 <b>↗</b></a>
           </article>
         </section>
       </section>
+
+      <section id="purpose" class="purpose-section public-section" data-reveal>
+        <div class="section-rail"><span>02</span><small>WHY BLUEVISA</small></div>
+        <div class="purpose-copy">
+          <p class="eyebrow">THE REASON BEHIND THIS PROJECT</p>
+          <h2>等待签证已经够漫长，<br />查询不该再让人困惑。</h2>
+          <div class="purpose-columns">
+            <p>BlueVisa 的起点很简单：许多同学已经完成材料递交，却不知道 MEEN 开头的编号是什么、在哪里找到，以及拿到编号后应该去哪里下载 eVisa。</p>
+            <p>作者 Blue 希望用一个清楚、克制、公开透明的工具，把散落在系统中的本人信息整理成下一步能真正使用的指引。它是一项免费公益服务，也会一直保留开源版本。</p>
+          </div>
+          <blockquote><span>“</span>让每一位等待来港读书的同学，少一点信息差，多一点安心。<cite>— Blue，项目作者</cite></blockquote>
+        </div>
+        <div class="purpose-monogram" aria-hidden="true"><span>B</span><span>V</span><small>EST. 2026</small></div>
+      </section>
+
+      <section id="privacy" class="privacy-section public-section" data-reveal>
+        <div class="section-rail inverse"><span>03</span><small>PRIVACY</small></div>
+        <div class="privacy-heading">
+          <p class="eyebrow">EPHEMERAL BY DESIGN</p>
+          <h2>查询会经过，<br /><em>资料不留下。</em></h2>
+          <p>BlueVisa 采用一次性服务端会话。教大登录字段与查询结果只在当前请求期间存在，不建立签证资料数据库。</p>
+        </div>
+        <div class="privacy-matrix">
+          <article><span>即时处理</span><strong>教大登录字段</strong><p>仅用于当次连接官网，完成后不再保留。</p></article>
+          <article><span>从不持久保存</span><strong>Cookie 与签证结果</strong><p>不写入 PostgreSQL、文件或应用日志。</p></article>
+          <article><span>网站运行所需</span><strong>账号与登录会话</strong><p>仅保存邮箱、密码哈希和网站 session，用于多人隔离。</p></article>
+          <article><span>公开可核验</span><strong>源代码与字段白名单</strong><p>明确排除申请状态、上传文件和完整文件清单。</p></article>
+        </div>
+      </section>
+
+      <section class="open-source-section public-section" data-reveal>
+        <div class="github-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 .8a11.4 11.4 0 0 0-3.6 22.2c.6.1.8-.2.8-.5v-2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.6.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.5.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.8 5.4-5.5 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.4 11.4 0 0 0 12 .8Z"/></svg></div>
+        <div><p class="eyebrow">OPEN SOURCE / PUBLIC REVIEW</p><h2>代码公开，才能让<br />“不保存”这句话被检查。</h2><p>查询逻辑、字段白名单、部署方式和本机插件均已在 GitHub 公开。欢迎审阅、提出问题或参与改进。</p></div>
+        <a class="source-button" href="https://github.com/qzblue/eduhkvisa" target="_blank" rel="noopener noreferrer"><span>查看 GitHub 项目</span><b>↗</b></a>
+      </section>
+
+      <section id="disclaimer" class="disclaimer-section public-section" data-reveal>
+        <div class="section-rail"><span>04</span><small>LEGAL</small></div>
+        <div>
+          <p class="eyebrow">IMPORTANT DISCLAIMER</p>
+          <h2>使用前，请了解这些边界。</h2>
+          <div class="disclaimer-grid">
+            <p><strong>非官方服务</strong>BlueVisa 不是香港教育大学、香港特别行政区政府或入境事务处的官方网站、代理或合作项目。</p>
+            <p><strong>结果仅供便捷查阅</strong>本站只整理用户本人通过教大系统可访问的资料，不参与审批、签发、缴费或修改任何申请。</p>
+            <p><strong>MEEN 不等于获批</strong>找到申请档案编号不代表电子签证已经签发，最终状态与可下载结果一律以官方通知及政府网站为准。</p>
+            <p><strong>仅查询本人资料</strong>使用者应确保所填资料属于本人或已取得合法授权，并自行承担因资料输入错误或不当使用产生的责任。</p>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <footer>
-      <span>非香港教育大学或香港入境事务处官方产品</span>
-      <span>签证资料经服务器临时处理，但不会持久保存</span>
+    <footer class="site-footer">
+      <div class="footer-brand"><span class="brand-mark mini" aria-hidden="true"><i>B</i><i>V</i></span><div><strong>BLUEVISA</strong><small>A public-interest project by Blue</small></div></div>
+      <p>为香港教育大学学生提供 eVisa 申请档案编号预查指引。</p>
+      <div class="footer-links"><a href="#disclaimer">免责声明</a><a href="https://github.com/qzblue/eduhkvisa" target="_blank" rel="noopener noreferrer">GitHub ↗</a><span>© 2026 Blue</span></div>
     </footer>
+
     <script src="portal.js"></script>
   </body>
 </html>

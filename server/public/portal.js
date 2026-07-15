@@ -1,3 +1,5 @@
+document.documentElement.classList.add("js");
+
 const elements = {
   authView: document.querySelector("#authView"),
   portalView: document.querySelector("#portalView"),
@@ -46,6 +48,7 @@ elements.copyVisaNumberButton.addEventListener("click", () =>
 );
 
 initialize();
+setupRevealMotion();
 
 async function initialize() {
   try {
@@ -249,4 +252,25 @@ function formatDate(value) {
   return match
     ? `${match[3]} 年 ${Number(match[1])} 月 ${Number(match[2])} 日`
     : displayValue(value);
+}
+
+function setupRevealMotion() {
+  const sections = document.querySelectorAll("[data-reveal]");
+  if (!("IntersectionObserver" in window)) {
+    sections.forEach((section) => section.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -5%" }
+  );
+
+  sections.forEach((section) => observer.observe(section));
 }
