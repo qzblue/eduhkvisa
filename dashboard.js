@@ -15,10 +15,7 @@ const elements = {
   masterFields: document.querySelector("#masterFields"),
   applicantFields: document.querySelector("#applicantFields"),
   lastUpdated: document.querySelector("#lastUpdated"),
-  evisaMessage: document.querySelector("#evisaMessage"),
-  pairingInput: document.querySelector("#pairingInput"),
-  syncButton: document.querySelector("#syncButton"),
-  syncNotice: document.querySelector("#syncNotice")
+  evisaMessage: document.querySelector("#evisaMessage")
 };
 
 const maritalTranslations = {
@@ -44,7 +41,6 @@ elements.loginButton.addEventListener("click", openLoginPage);
 elements.copyReferenceButton.addEventListener("click", () => {
   copyText(currentData?.masterDetail?.immdRefNo, elements.copyReferenceButton);
 });
-elements.syncButton.addEventListener("click", syncToPortal);
 
 if (!isExtensionPage()) {
   showNotice(
@@ -203,122 +199,6 @@ function formatVisaType(type, description) {
 
 function displayValue(value) {
   return value === null || value === undefined || value === "" ? "—" : String(value);
-}
-
-async function syncToPortal() {
-  if (!currentData) {
-    setSyncNotice("请先查询教大签证资料。", true);
-    return;
-  }
-
-  let connection;
-  try {
-    connection = parseConnectionCode(elements.pairingInput.value);
-  } catch (error) {
-    setSyncNotice(error.message, true);
-    return;
-  }
-
-  elements.syncButton.disabled = true;
-  setSyncNotice("正在安全连接你的签证中心页面…", false);
-
-  try {
-    const permission = { origins: [`${connection.origin}/*`] };
-    const granted = await chrome.permissions.request(permission);
-    if (!granted) {
-      throw new Error("你没有允许插件连接该网站，请重新点击并选择允许。");
-    }
-
-    const response = await fetch(`${connection.origin}/api/bridge/submit`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        pairingCode: connection.pairingCode,
-        data: buildPortalPayload(currentData)
-      })
-    });
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok || !result.ok) {
-      throw new Error(result.message || "连接码无效或已经过期，请回到网站重新生成。");
-    }
-
-    setSyncNotice("发送成功！现在回到签证中心网站，资料会自动显示。", false);
-    elements.pairingInput.value = "";
-  } catch (error) {
-    setSyncNotice(error.message || "发送失败，请检查连接码和网络后重试。", true);
-  } finally {
-    elements.syncButton.disabled = false;
-  }
-}
-
-function parseConnectionCode(rawValue) {
-  const value = String(rawValue || "").trim();
-  if (!value) throw new Error("请粘贴网站生成的整条连接码。");
-
-  let url;
-  try {
-    url = new URL(value);
-  } catch (_error) {
-    throw new Error("连接码格式不正确，请从网站重新复制整条内容。");
-  }
-
-  const isSecure = url.protocol === "https:";
-  const isLocalhost =
-    url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname);
-  if (!isSecure && !isLocalhost) {
-    throw new Error("签证中心必须使用 HTTPS；本机测试可使用 localhost。");
-  }
-
-  const pairingCode = url.hash.slice(1);
-  if (!pairingCode || !pairingCode.includes(".")) {
-    throw new Error("连接码不完整，请从网站重新复制。");
-  }
-
-  return { origin: url.origin, pairingCode };
-}
-
-function buildPortalPayload(data) {
-  const master = data.masterDetail || {};
-  const applicant = data.applicantDetail || {};
-
-  return {
-    masterDetail: {
-      aidm: master.aidm,
-      termCode: master.termCode,
-      submittedAt: master.submittedAt,
-      verifiedAt: master.verifiedAt,
-      rejectedAt: master.rejectedAt,
-      immdRefNo: master.immdRefNo,
-      traditionalChineseName: master.traditionalChineseName,
-      maritalStatus: master.maritalStatus,
-      eepNo: master.eepNo,
-      pob: master.pob,
-      remark: master.remark,
-      needNOL: master.needNOL
-    },
-    applicantDetail: {
-      applicantNo: applicant.applicantNo,
-      englishName: applicant.englishName,
-      chineseName: applicant.chineseName,
-      mainlandId: applicant.mainlandId,
-      passport: applicant.passport,
-      nationality: applicant.nationality,
-      nationalityName: applicant.nationalityName,
-      dob: applicant.dob,
-      visaType: applicant.visaType,
-      visaDesc: applicant.visaDesc
-    },
-    documentSummary: {
-      uploadedCount: Object.keys(data.uploadedDocuments || {}).length,
-      requiredCount: (data.requiredDocuments || []).filter((item) => item.isRequired).length
-    }
-  };
-}
-
-function setSyncNotice(message, isError) {
-  elements.syncNotice.textContent = message;
-  elements.syncNotice.classList.toggle("error", Boolean(isError));
 }
 
 function showView(name) {

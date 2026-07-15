@@ -18,7 +18,7 @@
         <span id="userEmail"></span>
         <button id="logoutButton" type="button">退出登录</button>
       </div>
-      <div id="privacyBadge" class="privacy-badge"><span></span>不收集教大密码</div>
+      <div id="privacyBadge" class="privacy-badge"><span></span>签证资料不落盘</div>
     </header>
 
     <main>
@@ -27,11 +27,11 @@
           <p class="eyebrow">A SAFER WAY TO READ YOUR VISA REFERENCE</p>
           <h1>登录自己的<br /><em>签证信息空间</em></h1>
           <p>
-            每位学生拥有独立的网站会话。教大账号只在教大官网输入，本站不会要求你的教大密码或 Cookie。
+            每位学生拥有独立的网站会话。查询时由服务器临时连接教大官网，结果会直接返回给当前页面。
           </p>
           <div class="safety-note">
-            <strong>为什么还需要浏览器插件？</strong>
-            <span>浏览器不允许普通网站读取另一个网站的登录资料。插件只负责在你的电脑上读取本人资料。</span>
+            <strong>我们保存什么？</strong>
+            <span>仅保存本站账号的邮箱和密码哈希。教大登录资料、官网 Cookie 和签证查询结果不会写入数据库或日志。</span>
           </div>
         </div>
 
@@ -64,51 +64,81 @@
           <div>
             <p class="eyebrow">YOUR PRIVATE VISA WORKSPACE</p>
             <h1>查询我的签证编号</h1>
-            <p>第一次使用也没关系，按照下面四步操作即可。</p>
+            <p>无需安装插件，按教大官网的登录资料填写即可。</p>
           </div>
           <span class="session-chip"><i></i>你的独立安全会话</span>
         </div>
 
         <section id="guidePanel" class="guide-panel">
+          <div class="direct-status"><i></i><span>服务端临时查询 · 不保存签证资料</span></div>
           <ol class="steps">
             <li>
               <span class="step-number">01</span>
-              <div><strong>安装查询插件</strong><p>插件负责从你已经登录的教大官网读取资料。</p><a href="https://github.com/qzblue/eduhkvisa" target="_blank" rel="noopener noreferrer">查看小白安装教程 ↗</a></div>
+              <div><strong>填写本人资料</strong><p>使用教大签证系统要求的申请编号、身份证明、出生日期和入学学期。</p></div>
             </li>
             <li>
               <span class="step-number">02</span>
-              <div><strong>登录教大官网</strong><p>请在同一个浏览器中登录，页面保持开启。</p><a href="https://pappl.eduhk.hk/VMS/admission/applicant/ImmD/submission" target="_blank" rel="noopener noreferrer">打开教大官网 ↗</a></div>
+              <div><strong>服务器临时查询</strong><p>本站代你向教大官方接口登录并读取资料，全程使用加密连接。</p></div>
             </li>
             <li>
               <span class="step-number">03</span>
-              <div><strong>生成一次性连接码</strong><p>点击下方按钮。连接码 10 分钟后自动失效。</p></div>
-            </li>
-            <li>
-              <span class="step-number">04</span>
-              <div><strong>粘贴到插件</strong><p>打开插件查询资料，再把连接码粘贴到“同步到网站”。</p></div>
+              <div><strong>获得 MEEN 编号</strong><p>查询结束立即丢弃教大 Cookie，只在当前页面显示精简结果。</p></div>
             </li>
           </ol>
 
-          <button id="createQueryButton" class="solid-button start-button" type="button">
-            我已准备好，开始查询
-          </button>
+          <form id="officialLoginForm" class="official-form" autocomplete="off">
+            <div class="form-title">
+              <div><span>OFFICIAL LOGIN</span><h2>填写教大签证系统登录资料</h2></div>
+              <a href="https://pappl.eduhk.hk/VMS/admission" target="_blank" rel="noopener noreferrer">对照教大官网 ↗</a>
+            </div>
+            <div class="official-fields">
+              <label>教大申请编号
+                <input name="applicantNo" type="text" maxlength="9" placeholder="例如 A12345678" required />
+              </label>
+              <label>身份证明类型
+                <select name="idType" required>
+                  <option value="MAINLAND_ID">中国内地居民身份证</option>
+                  <option value="PASSPORT">护照</option>
+                </select>
+              </label>
+              <label>完整身份证明号码
+                <input name="id" type="text" maxlength="30" placeholder="请输入申请时登记的号码" required />
+              </label>
+              <label>出生日期
+                <input name="dob" type="date" required />
+              </label>
+              <label>入学学期
+                <select id="admissionTerm" name="admissionTerm" required>
+                  <option value="">正在读取教大可用学期…</option>
+                </select>
+              </label>
+            </div>
+            <label class="consent-row">
+              <input name="consent" type="checkbox" required />
+              <span>我确认查询本人资料，并了解上述登录字段会经本站服务器转交教大官网，但不会被持久保存。</span>
+            </label>
+            <div class="privacy-explainer">
+              <strong>一次请求，用完即丢弃</strong>
+              <p>本站不会保存身份证明号码、出生日期、教大 Cookie 或签证结果。服务器日志也不会记录请求正文。</p>
+            </div>
+            <button id="createQueryButton" class="solid-button start-button" type="submit">安全登录并查询</button>
+            <p id="guideNotice" class="form-notice centered" role="status"></p>
+          </form>
+
+          <p class="plugin-alternative">不想让资料经过服务器？仍可使用<a href="https://github.com/qzblue/eduhkvisa" target="_blank" rel="noopener noreferrer">本机插件版本 ↗</a></p>
         </section>
 
-        <section id="connectionPanel" class="connection-panel" hidden>
-          <div class="connection-heading">
-            <p class="eyebrow">ONE-TIME CONNECTION</p>
-            <h2>复制这条连接码</h2>
-            <p>打开“教大签证进度助手”，查询成功后粘贴到页面底部的“同步到网站”。</p>
-          </div>
-          <div class="code-control">
-            <input id="connectionCode" type="text" readonly aria-label="一次性连接码" />
-            <button id="copyConnectionButton" type="button">复制连接码</button>
-          </div>
+        <section id="queryingPanel" class="querying-panel" hidden>
+          <div class="query-scanner" aria-hidden="true"><span></span></div>
+          <p class="eyebrow">SECURE SERVER REQUEST</p>
+          <h2>正在安全连接教大官网…</h2>
+          <p>服务器正在建立一次性官网会话、登录并读取 MEEN 编号，请不要关闭页面。</p>
           <div class="waiting-line">
             <span class="pulse" aria-hidden="true"></span>
-            <div><strong>正在等待插件发送资料</strong><small id="expiryText"></small></div>
+            <div><strong>不会写入数据库或日志</strong><small>通常几秒钟即可完成</small></div>
           </div>
           <p id="queryNotice" class="form-notice" role="status"></p>
+          <button id="backToGuideButton" class="quiet-button" type="button">返回操作说明</button>
         </section>
 
         <section id="resultPanel" class="result-panel" hidden>
@@ -147,7 +177,7 @@
 
     <footer>
       <span>非香港教育大学或香港入境事务处官方产品</span>
-      <span>一次性资料在传递完成后自动删除</span>
+      <span>签证资料经服务器临时处理，但不会持久保存</span>
     </footer>
     <script src="portal.js"></script>
   </body>

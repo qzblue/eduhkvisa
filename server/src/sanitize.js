@@ -1,29 +1,16 @@
 const MASTER_FIELDS = [
-  "aidm",
   "termCode",
-  "submittedAt",
-  "verifiedAt",
-  "rejectedAt",
   "immdRefNo",
   "traditionalChineseName",
-  "maritalStatus",
-  "eepNo",
-  "pob",
-  "remark",
-  "needNOL"
+  "eepNo"
 ];
 
 const APPLICANT_FIELDS = [
   "applicantNo",
   "englishName",
   "chineseName",
-  "mainlandId",
   "passport",
-  "nationality",
-  "nationalityName",
-  "dob",
-  "visaType",
-  "visaDesc"
+  "dob"
 ];
 
 export function sanitizeVisaData(input) {
@@ -43,11 +30,7 @@ export function sanitizeVisaData(input) {
 
   return {
     masterDetail,
-    applicantDetail,
-    documentSummary: {
-      uploadedCount: safeCount(input.documentSummary?.uploadedCount),
-      requiredCount: safeCount(input.documentSummary?.requiredCount)
-    }
+    applicantDetail
   };
 }
 
@@ -63,9 +46,4 @@ function pickSafeFields(source, fields) {
   }
 
   return result;
-}
-
-function safeCount(value) {
-  const count = Number(value);
-  return Number.isInteger(count) && count >= 0 && count <= 1000 ? count : 0;
 }

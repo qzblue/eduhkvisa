@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,13 +8,12 @@ import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import pg from "pg";
 import { z } from "zod";
+import { hashPassword, verifyPassword } from "./security.js";
 import {
-  createPairingSecret,
-  hashPairingSecret,
-  hashPassword,
-  verifyPassword
-} from "./security.js";
-import { sanitizeVisaData } from "./sanitize.js";
+  fetchAdmissionTerms,
+  OfficialServiceError,
+  queryOfficialVisa
+} from "./official-client.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDirectory = path.resolve(__dirname, "../public");
@@ -27,7 +25,6 @@ const environment = z
     DATABASE_URL: z.string().min(1),
     PUBLIC_ORIGIN: z.string().url(),
     SESSION_SECRET: z.string().min(32),
-    PAIRING_PEPPER: z.string().min(32),
     ALLOW_REGISTRATION: z.string().default("true"),
     DATABASE_SSL: z.string().default("false")
   })
@@ -95,11 +92,12 @@ const authLimiter = rateLimit({
   legacyHeaders: false
 });
 
-const bridgeLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  limit: 60,
+const officialQueryLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 12,
   standardHeaders: "draft-8",
-  legacyHeaders: false
+  legacyHeaders: false,
+  message: { message: "查询次数过多，请稍后再试。" }
 });
 
 app.get("/health", async (_request, response) => {
@@ -177,114 +175,25 @@ app.post("/api/auth/logout", requireSameOrigin, (request, response, next) => {
   });
 });
 
-app.post(
-  "/api/query-requests",
-  requireSameOrigin,
-  requireAuth,
-  asyncHandler(async (request, response) => {
-    const id = crypto.randomUUID();
-    const secret = createPairingSecret();
-    const tokenHash = hashPairingSecret(secret, environment.PAIRING_PEPPER);
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-
-    await pool.query(
-      `INSERT INTO visa_query_requests(id, user_id, token_hash, expires_at)
-       VALUES($1, $2, $3, $4)`,
-      [id, request.session.userId, tokenHash, expiresAt]
-    );
-
-    response.status(201).json({
-      ok: true,
-      requestId: id,
-      connectionCode: `${publicOrigin}/connect#${id}.${secret}`,
-      expiresAt: expiresAt.toISOString()
-    });
-  })
-);
-
 app.get(
-  "/api/query-requests/:id",
+  "/api/official/terms",
   requireAuth,
-  asyncHandler(async (request, response) => {
-    const result = await pool.query(
-      `SELECT payload, expires_at, received_at
-       FROM visa_query_requests
-       WHERE id = $1 AND user_id = $2`,
-      [request.params.id, request.session.userId]
-    );
-    const query = result.rows[0];
-
-    if (!query) return response.status(404).json({ message: "没有找到这次查询。" });
-    if (new Date(query.expires_at).getTime() <= Date.now()) {
-      return response.status(410).json({ message: "连接码已经过期，请重新开始查询。" });
-    }
-    if (!query.payload) return response.json({ ok: true, state: "waiting" });
-
-    await pool.query(
-      "UPDATE visa_query_requests SET delivered_at = COALESCE(delivered_at, NOW()) WHERE id = $1",
-      [request.params.id]
-    );
-    response.json({ ok: true, state: "ready", data: query.payload });
+  asyncHandler(async (_request, response) => {
+    response.setHeader("Cache-Control", "no-store");
+    response.json({ ok: true, terms: await fetchAdmissionTerms() });
   })
 );
 
-app.delete(
-  "/api/query-requests/:id",
+app.post(
+  "/api/official/query",
+  officialQueryLimiter,
   requireSameOrigin,
   requireAuth,
   asyncHandler(async (request, response) => {
-    await pool.query("DELETE FROM visa_query_requests WHERE id = $1 AND user_id = $2", [
-      request.params.id,
-      request.session.userId
-    ]);
-    response.json({ ok: true });
-  })
-);
-
-app.options("/api/bridge/submit", allowExtensionCors);
-app.post(
-  "/api/bridge/submit",
-  bridgeLimiter,
-  allowExtensionCors,
-  asyncHandler(async (request, response) => {
-    const pairingCode = String(request.body?.pairingCode || "");
-    const separator = pairingCode.indexOf(".");
-    if (separator <= 0) {
-      return response.status(400).json({ message: "连接码格式不正确。" });
-    }
-
-    const id = pairingCode.slice(0, separator);
-    const secret = pairingCode.slice(separator + 1);
-    if (!z.string().uuid().safeParse(id).success || secret.length < 20) {
-      return response.status(400).json({ message: "连接码格式不正确。" });
-    }
-
-    let payload;
-    try {
-      payload = sanitizeVisaData(request.body?.data);
-    } catch (error) {
-      return response.status(400).json({ message: error.message });
-    }
-
-    const tokenHash = hashPairingSecret(secret, environment.PAIRING_PEPPER);
-    const result = await pool.query(
-      `UPDATE visa_query_requests
-       SET payload = $1::jsonb, received_at = NOW()
-       WHERE id = $2
-         AND token_hash = $3
-         AND expires_at > NOW()
-         AND payload IS NULL
-       RETURNING id`,
-      [JSON.stringify(payload), id, tokenHash]
-    );
-
-    if (result.rowCount !== 1) {
-      return response
-        .status(410)
-        .json({ message: "连接码无效、已使用或已经过期，请在网站重新生成。" });
-    }
-
-    response.json({ ok: true });
+    const credentials = parseOfficialCredentials(request.body);
+    const data = await queryOfficialVisa(credentials);
+    response.setHeader("Cache-Control", "no-store");
+    response.json({ ok: true, data });
   })
 );
 
@@ -302,21 +211,8 @@ const server = app.listen(environment.PORT, () => {
   console.log(`EduHK Visa Portal listening on port ${environment.PORT}`);
 });
 
-const cleanupTimer = setInterval(async () => {
-  try {
-    await pool.query(
-      `DELETE FROM visa_query_requests
-       WHERE expires_at < NOW() OR delivered_at < NOW() - INTERVAL '10 minutes'`
-    );
-  } catch (error) {
-    console.error("Expired query cleanup failed", error);
-  }
-}, 60_000);
-cleanupTimer.unref();
-
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
-    clearInterval(cleanupTimer);
     server.close();
     await pool.end();
     process.exit(0);
@@ -337,6 +233,30 @@ function parseCredentials(body) {
     .parse(body);
 }
 
+function parseOfficialCredentials(body) {
+  const credentials = z
+    .object({
+      applicantNo: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{1,9}$/),
+      idType: z.enum(["MAINLAND_ID", "PASSPORT"]),
+      id: z.string().trim().toUpperCase().regex(/^[A-Z0-9]{3,30}$/),
+      dob: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/),
+      admissionTerm: z.string().regex(/^\d{6}$/)
+    })
+    .parse(body);
+
+  const [month, day, year] = credentials.dob.split("/").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    throw new z.ZodError([]);
+  }
+
+  return credentials;
+}
+
 function requireAuth(request, response, next) {
   if (!request.session.userId) {
     return response.status(401).json({ message: "请先登录签证中心。" });
@@ -352,21 +272,6 @@ function requireSameOrigin(request, response, next) {
   next();
 }
 
-function allowExtensionCors(request, response, next) {
-  const origin = request.get("origin");
-  if (origin?.startsWith("chrome-extension://")) {
-    response.setHeader("Access-Control-Allow-Origin", origin);
-    response.setHeader("Vary", "Origin");
-    response.setHeader("Access-Control-Allow-Headers", "content-type");
-    response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  } else if (origin) {
-    return response.status(403).json({ message: "只允许从签证助手插件提交资料。" });
-  }
-
-  if (request.method === "OPTIONS") return response.sendStatus(204);
-  next();
-}
-
 async function signIn(request, user) {
   await new Promise((resolve, reject) => {
     request.session.regenerate((error) => (error ? reject(error) : resolve()));
@@ -378,9 +283,14 @@ async function signIn(request, user) {
 function asyncHandler(handler) {
   return (request, response, next) => {
     Promise.resolve(handler(request, response, next)).catch((error) => {
+      if (error instanceof OfficialServiceError) {
+        return response.status(error.status).json({ message: error.message });
+      }
       if (error instanceof z.ZodError) {
         return response.status(400).json({
-          message: "请输入有效邮箱，密码至少需要 10 个字符。"
+          message: request.path.startsWith("/api/official/")
+            ? "请输入完整且格式正确的教大登录资料。"
+            : "请输入有效邮箱，密码至少需要 10 个字符。"
         });
       }
       next(error);

@@ -11,12 +11,13 @@ const elements = {
   registerForm: document.querySelector("#registerForm"),
   authNotice: document.querySelector("#authNotice"),
   guidePanel: document.querySelector("#guidePanel"),
-  connectionPanel: document.querySelector("#connectionPanel"),
+  guideNotice: document.querySelector("#guideNotice"),
+  queryingPanel: document.querySelector("#queryingPanel"),
   resultPanel: document.querySelector("#resultPanel"),
+  officialLoginForm: document.querySelector("#officialLoginForm"),
+  admissionTerm: document.querySelector("#admissionTerm"),
   createQueryButton: document.querySelector("#createQueryButton"),
-  connectionCode: document.querySelector("#connectionCode"),
-  copyConnectionButton: document.querySelector("#copyConnectionButton"),
-  expiryText: document.querySelector("#expiryText"),
+  backToGuideButton: document.querySelector("#backToGuideButton"),
   queryNotice: document.querySelector("#queryNotice"),
   newQueryButton: document.querySelector("#newQueryButton"),
   copyVisaNumberButton: document.querySelector("#copyVisaNumberButton"),
@@ -30,8 +31,6 @@ const elements = {
   portalTravelDocument: document.querySelector("#portalTravelDocument")
 };
 
-let pollTimer = null;
-let expiryTimer = null;
 let currentVisaNumber = "";
 
 elements.loginTab.addEventListener("click", () => selectAuthTab("login"));
@@ -39,10 +38,8 @@ elements.registerTab.addEventListener("click", () => selectAuthTab("register"));
 elements.loginForm.addEventListener("submit", (event) => submitAuth(event, "login"));
 elements.registerForm.addEventListener("submit", (event) => submitAuth(event, "register"));
 elements.logoutButton.addEventListener("click", logout);
-elements.createQueryButton.addEventListener("click", createQuery);
-elements.copyConnectionButton.addEventListener("click", () =>
-  copyText(elements.connectionCode.value, elements.copyConnectionButton)
-);
+elements.officialLoginForm.addEventListener("submit", queryVisaDetail);
+elements.backToGuideButton.addEventListener("click", resetQuery);
 elements.newQueryButton.addEventListener("click", resetQuery);
 elements.copyVisaNumberButton.addEventListener("click", () =>
   copyText(currentVisaNumber, elements.copyVisaNumberButton)
@@ -54,8 +51,12 @@ async function initialize() {
   try {
     const session = await api("/api/me");
     elements.registerTab.hidden = !session.allowRegistration;
-    if (session.authenticated) showPortal(session.user);
-    else showAuth();
+    if (session.authenticated) {
+      showPortal(session.user);
+      await loadAdmissionTerms();
+    } else {
+      showAuth();
+    }
   } catch (_error) {
     showAuth();
     elements.authNotice.textContent = "暂时无法连接服务器，请稍后刷新页面。";
@@ -87,6 +88,7 @@ async function submitAuth(event, mode) {
     form.reset();
     elements.authNotice.textContent = "";
     showPortal(result.user);
+    await loadAdmissionTerms();
   } catch (error) {
     elements.authNotice.textContent = error.message;
   } finally {
@@ -96,23 +98,66 @@ async function submitAuth(event, mode) {
 
 async function logout() {
   await api("/api/auth/logout", { method: "POST" }).catch(() => null);
-  stopTimers();
   resetQuery();
+  elements.officialLoginForm.reset();
   showAuth();
 }
 
-async function createQuery() {
-  elements.createQueryButton.disabled = true;
+async function loadAdmissionTerms() {
+  elements.admissionTerm.disabled = true;
+  elements.admissionTerm.innerHTML = '<option value="">正在读取教大可用学期…</option>';
 
   try {
-    const result = await api("/api/query-requests", { method: "POST" });
-    elements.connectionCode.value = result.connectionCode;
-    elements.guidePanel.hidden = true;
-    elements.resultPanel.hidden = true;
-    elements.connectionPanel.hidden = false;
-    elements.queryNotice.textContent = "";
-    startExpiryCountdown(result.expiresAt);
-    startPolling(result.requestId);
+    const result = await api("/api/official/terms");
+    elements.admissionTerm.innerHTML = '<option value="">请选择入学学期</option>';
+    for (const term of result.terms || []) {
+      const option = document.createElement("option");
+      option.value = term.code;
+      option.textContent = `${formatTerm(term.code)} · ${term.description}`;
+      elements.admissionTerm.append(option);
+    }
+    elements.admissionTerm.disabled = false;
+  } catch (error) {
+    elements.admissionTerm.innerHTML = '<option value="">读取失败，请刷新页面重试</option>';
+    elements.guideNotice.textContent = error.message;
+  }
+}
+
+async function queryVisaDetail(event) {
+  event.preventDefault();
+  elements.guideNotice.textContent = "";
+  elements.queryNotice.textContent = "";
+
+  const formData = new FormData(elements.officialLoginForm);
+  const dob = toOfficialDate(formData.get("dob"));
+  const payload = {
+    applicantNo: String(formData.get("applicantNo") || "").trim(),
+    idType: String(formData.get("idType") || ""),
+    id: String(formData.get("id") || "").trim(),
+    dob,
+    admissionTerm: String(formData.get("admissionTerm") || "")
+  };
+
+  if (!dob) {
+    elements.guideNotice.textContent = "请选择正确的出生日期。";
+    return;
+  }
+
+  elements.createQueryButton.disabled = true;
+  elements.guidePanel.hidden = true;
+  elements.resultPanel.hidden = true;
+  elements.queryingPanel.hidden = false;
+
+  try {
+    const result = await api("/api/official/query", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    renderResult(result.data);
+    elements.queryingPanel.hidden = true;
+    elements.resultPanel.hidden = false;
+    // 成功后立即从网页表单清除完整身份证明号码。
+    elements.officialLoginForm.elements.id.value = "";
   } catch (error) {
     elements.queryNotice.textContent = error.message;
   } finally {
@@ -120,44 +165,9 @@ async function createQuery() {
   }
 }
 
-function startPolling(requestId) {
-  clearInterval(pollTimer);
-  pollTimer = setInterval(async () => {
-    try {
-      const result = await api(`/api/query-requests/${requestId}`);
-      if (result.state !== "ready") return;
-
-      stopTimers();
-      renderResult(result.data);
-      elements.connectionPanel.hidden = true;
-      elements.resultPanel.hidden = false;
-      await api(`/api/query-requests/${requestId}`, { method: "DELETE" }).catch(() => null);
-    } catch (error) {
-      if (error.status === 410 || error.status === 404) {
-        stopTimers();
-        elements.queryNotice.textContent = error.message;
-      }
-    }
-  }, 1800);
-}
-
-function startExpiryCountdown(expiresAt) {
-  clearInterval(expiryTimer);
-  const update = () => {
-    const seconds = Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 1000));
-    const minutes = Math.floor(seconds / 60);
-    const remainder = String(seconds % 60).padStart(2, "0");
-    elements.expiryText.textContent = seconds
-      ? `连接码将在 ${minutes}:${remainder} 后失效`
-      : "连接码已失效，请重新开始查询";
-  };
-  update();
-  expiryTimer = setInterval(update, 1000);
-}
-
 function renderResult(data) {
-  const master = data.masterDetail || {};
-  const applicant = data.applicantDetail || {};
+  const master = data?.masterDetail || {};
+  const applicant = data?.applicantDetail || {};
   currentVisaNumber = displayValue(master.immdRefNo);
 
   elements.portalImmdRefNo.textContent = currentVisaNumber;
@@ -192,20 +202,12 @@ function showPortal(user) {
 }
 
 function resetQuery() {
-  stopTimers();
   elements.guidePanel.hidden = false;
-  elements.connectionPanel.hidden = true;
+  elements.queryingPanel.hidden = true;
   elements.resultPanel.hidden = true;
-  elements.connectionCode.value = "";
   elements.queryNotice.textContent = "";
+  elements.guideNotice.textContent = "";
   currentVisaNumber = "";
-}
-
-function stopTimers() {
-  clearInterval(pollTimer);
-  clearInterval(expiryTimer);
-  pollTimer = null;
-  expiryTimer = null;
 }
 
 async function api(url, options = {}) {
@@ -214,20 +216,21 @@ async function api(url, options = {}) {
     headers: { "content-type": "application/json", ...(options.headers || {}) }
   });
   const result = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(result.message || "请求失败，请稍后重试。");
-    error.status = response.status;
-    throw error;
-  }
+  if (!response.ok) throw new Error(result.message || "请求失败，请稍后重试。");
   return result;
 }
 
 async function copyText(value, button) {
-  if (!value) return;
+  if (!value || value === "—") return;
   await navigator.clipboard.writeText(value);
   const original = button.textContent;
   button.textContent = "已复制";
   setTimeout(() => (button.textContent = original), 1300);
+}
+
+function toOfficialDate(value) {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[2]}/${match[3]}/${match[1]}` : "";
 }
 
 function displayValue(value) {

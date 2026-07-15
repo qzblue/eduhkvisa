@@ -1,9 +1,4 @@
-import {
-  createHmac,
-  randomBytes,
-  scrypt as scryptCallback,
-  timingSafeEqual
-} from "node:crypto";
+import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 
 const scrypt = promisify(scryptCallback);
@@ -30,12 +25,4 @@ export async function verifyPassword(password, storedValue) {
   );
 
   return expected.length === actual.length && timingSafeEqual(expected, actual);
-}
-
-export function createPairingSecret() {
-  return randomBytes(24).toString("base64url");
-}
-
-export function hashPairingSecret(secret, pepper) {
-  return createHmac("sha256", pepper).update(secret).digest("hex");
 }
