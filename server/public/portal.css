@@ -250,11 +250,19 @@ a { color: inherit; }
 .form-title span { color: var(--color-primary); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; }
 .form-title h2 { margin: 5px 0 0; font-size: 27px; letter-spacing: -0.03em; }
 .form-title a { color: var(--color-primary); font-size: 11px; font-weight: 700; text-decoration: none; }
+.form-alert { margin: -4px 0 24px; padding: 15px 16px; display: grid; grid-template-columns: 24px 1fr; gap: 11px; color: #812c35; background: #fff5f6; border: 1px solid #efc9ce; border-radius: var(--radius-sm); }
+.form-alert > i { width: 22px; height: 22px; display: grid; place-items: center; color: #fff; background: var(--color-error); border-radius: 50%; font-size: 12px; font-style: normal; font-weight: 800; }
+.form-alert strong { display: block; color: #812c35; font-size: 12px; }
+.form-alert p { margin: 3px 0 0; font-size: 11px; line-height: 1.6; }
 .official-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px 18px; }
 .wide-field { grid-column: 1 / -1; }
 .official-fields select:disabled { color: var(--color-muted); cursor: wait; background: var(--color-surface-muted); }
+.official-fields .field-invalid input, .official-fields .field-invalid select { border-color: var(--color-error); box-shadow: 0 0 0 3px rgba(188, 63, 74, 0.08); }
+.field-error { display: block; margin-top: 6px; color: var(--color-error); font-size: 10px; font-weight: 600; line-height: 1.5; }
 .consent-row { margin-top: 24px; padding: 16px; display: grid; grid-template-columns: auto 1fr; gap: 12px; color: var(--color-muted); background: #f7f9fb; border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; font-size: 11px; line-height: 1.65; }
 .consent-row input { width: 17px; height: 17px; margin: 1px 0 0; accent-color: var(--color-primary); }
+.consent-row.field-invalid { background: #fff7f7; border-color: #efc9ce; }
+.consent-row .field-error { grid-column: 2; margin-top: -5px; }
 .form-action-row { margin-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .form-action-row p { max-width: 360px; margin: 0; color: var(--color-muted); font-size: 10px; line-height: 1.6; }
 .form-action-row p span { display: block; margin-bottom: 2px; color: var(--color-text); font-weight: 700; }

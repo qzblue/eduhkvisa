@@ -208,8 +208,13 @@ app.get(["/", "/connect"], (_request, response) => {
   response.sendFile(path.join(publicDirectory, "index.html"));
 });
 
-app.use((error, _request, response, _next) => {
+app.use((error, request, response, _next) => {
   console.error(error);
+  if (request.path.startsWith("/api/official/")) {
+    return response.status(502).json({
+      message: "查询过程中出现异常，但你的签证资料没有被保存。请稍后重试；如持续出现，可改用本机插件版本。"
+    });
+  }
   response.status(500).json({ message: "服务器暂时无法处理请求，请稍后再试。" });
 });
 

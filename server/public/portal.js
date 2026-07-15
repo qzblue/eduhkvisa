@@ -17,6 +17,8 @@ const elements = {
   queryingPanel: document.querySelector("#queryingPanel"),
   resultPanel: document.querySelector("#resultPanel"),
   officialLoginForm: document.querySelector("#officialLoginForm"),
+  officialFormAlert: document.querySelector("#officialFormAlert"),
+  officialFormAlertMessage: document.querySelector("#officialFormAlertMessage"),
   admissionTerm: document.querySelector("#admissionTerm"),
   createQueryButton: document.querySelector("#createQueryButton"),
   backToGuideButton: document.querySelector("#backToGuideButton"),
@@ -41,6 +43,8 @@ elements.loginForm.addEventListener("submit", (event) => submitAuth(event, "logi
 elements.registerForm.addEventListener("submit", (event) => submitAuth(event, "register"));
 elements.logoutButton.addEventListener("click", logout);
 elements.officialLoginForm.addEventListener("submit", queryVisaDetail);
+elements.officialLoginForm.addEventListener("input", clearFieldValidation);
+elements.officialLoginForm.addEventListener("change", clearFieldValidation);
 elements.backToGuideButton.addEventListener("click", resetQuery);
 elements.newQueryButton.addEventListener("click", resetQuery);
 elements.copyVisaNumberButton.addEventListener("click", () =>
@@ -152,8 +156,16 @@ async function queryVisaDetail(event) {
   event.preventDefault();
   elements.guideNotice.textContent = "";
   elements.queryNotice.textContent = "";
+  clearAllValidation();
 
   const formData = new FormData(elements.officialLoginForm);
+  const firstInvalidField = validateOfficialForm(formData);
+  if (firstInvalidField) {
+    showOfficialFormError("请修正下方标红的内容后再查询。", "资料尚未填写完整");
+    firstInvalidField.focus();
+    return;
+  }
+
   const dob = toOfficialDate(formData.get("dob"));
   const payload = {
     applicantNo: String(formData.get("applicantNo") || "").trim(),
@@ -162,11 +174,6 @@ async function queryVisaDetail(event) {
     dob,
     admissionTerm: String(formData.get("admissionTerm") || "")
   };
-
-  if (!dob) {
-    elements.guideNotice.textContent = "请选择正确的出生日期。";
-    return;
-  }
 
   elements.createQueryButton.disabled = true;
   elements.guidePanel.hidden = true;
@@ -184,7 +191,19 @@ async function queryVisaDetail(event) {
     // 成功后立即从网页表单清除完整身份证明号码。
     elements.officialLoginForm.elements.id.value = "";
   } catch (error) {
-    elements.queryNotice.textContent = error.message;
+    if (error.status === 401 && error.message.includes("请先登录签证中心")) {
+      showAuth();
+      elements.authNotice.textContent = "网站登录已经过期，请重新登录后再查询。";
+      return;
+    }
+
+    elements.queryingPanel.hidden = true;
+    elements.guidePanel.hidden = false;
+    showOfficialFormError(
+      error.message,
+      error.status === 422 ? "暂时没有查到 MEEN 编号" : "查询未成功"
+    );
+    elements.officialLoginForm.scrollIntoView({ behavior: "smooth", block: "center" });
   } finally {
     elements.createQueryButton.disabled = false;
   }
@@ -243,6 +262,7 @@ function resetQuery() {
   elements.queryNotice.textContent = "";
   elements.guideNotice.textContent = "";
   currentVisaNumber = "";
+  clearAllValidation();
 }
 
 async function api(url, options = {}) {
@@ -251,8 +271,100 @@ async function api(url, options = {}) {
     headers: { "content-type": "application/json", ...(options.headers || {}) }
   });
   const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.message || "请求失败，请稍后重试。");
+  if (!response.ok) {
+    const error = new Error(result.message || "请求失败，请稍后重试。");
+    error.status = response.status;
+    throw error;
+  }
   return result;
+}
+
+function validateOfficialForm(formData) {
+  const form = elements.officialLoginForm;
+  const fields = form.elements;
+  const invalid = [];
+  const applicantNo = String(formData.get("applicantNo") || "").trim();
+  const identity = String(formData.get("id") || "").trim();
+  const dob = String(formData.get("dob") || "");
+  const term = String(formData.get("admissionTerm") || "");
+
+  if (!applicantNo) {
+    invalid.push(markFieldInvalid(fields.applicantNo, "请输入教大申请编号。"));
+  } else if (!/^[a-zA-Z0-9]{1,9}$/.test(applicantNo)) {
+    invalid.push(markFieldInvalid(fields.applicantNo, "申请编号应为不超过 9 位的字母或数字。"));
+  }
+
+  if (!identity) {
+    invalid.push(markFieldInvalid(fields.id, "请输入申请时登记的完整身份证明号码。"));
+  } else if (!/^[a-zA-Z0-9]{3,30}$/.test(identity)) {
+    invalid.push(markFieldInvalid(fields.id, "身份证明号码只能包含字母和数字。"));
+  }
+
+  if (!dob) {
+    invalid.push(markFieldInvalid(fields.dob, "请选择出生日期。"));
+  } else {
+    const date = new Date(`${dob}T00:00:00`);
+    if (Number.isNaN(date.getTime()) || date > new Date()) {
+      invalid.push(markFieldInvalid(fields.dob, "请选择正确且不晚于今天的出生日期。"));
+    }
+  }
+
+  if (!term) {
+    invalid.push(markFieldInvalid(fields.admissionTerm, "请选择对应的入学学期。"));
+  }
+
+  if (!fields.consent.checked) {
+    invalid.push(markFieldInvalid(fields.consent, "请确认你正在查询本人或已获授权的资料。"));
+  }
+
+  return invalid.find(Boolean) || null;
+}
+
+function markFieldInvalid(field, message) {
+  field.setAttribute("aria-invalid", "true");
+  const container = field.closest("label");
+  container?.classList.add("field-invalid");
+  let notice = container?.querySelector(".field-error");
+  if (!notice && container) {
+    notice = document.createElement("small");
+    notice.className = "field-error";
+    container.append(notice);
+  }
+  if (notice) notice.textContent = message;
+  return field;
+}
+
+function clearFieldValidation(event) {
+  const field = event.target;
+  field.removeAttribute("aria-invalid");
+  const container = field.closest("label");
+  container?.classList.remove("field-invalid");
+  container?.querySelector(".field-error")?.remove();
+  hideOfficialFormError();
+}
+
+function clearAllValidation() {
+  elements.officialLoginForm
+    .querySelectorAll('[aria-invalid="true"]')
+    .forEach((field) => field.removeAttribute("aria-invalid"));
+  elements.officialLoginForm
+    .querySelectorAll(".field-invalid")
+    .forEach((container) => container.classList.remove("field-invalid"));
+  elements.officialLoginForm
+    .querySelectorAll(".field-error")
+    .forEach((notice) => notice.remove());
+  hideOfficialFormError();
+}
+
+function showOfficialFormError(message, title = "请检查查询资料") {
+  elements.officialFormAlert.querySelector("strong").textContent = title;
+  elements.officialFormAlertMessage.textContent = message;
+  elements.officialFormAlert.hidden = false;
+}
+
+function hideOfficialFormError() {
+  elements.officialFormAlert.hidden = true;
+  elements.officialFormAlertMessage.textContent = "";
 }
 
 async function copyText(value, button) {

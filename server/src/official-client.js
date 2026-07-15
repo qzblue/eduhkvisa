@@ -69,7 +69,17 @@ export async function queryOfficialVisa(credentials) {
     throw new OfficialServiceError("已登录教大，但暂时无法读取签证资料。请稍后重试。");
   }
 
-  return sanitizeVisaData(detail);
+  try {
+    return sanitizeVisaData(detail);
+  } catch (error) {
+    if (String(error?.message || "").includes("申请档案编号")) {
+      throw new OfficialServiceError(
+        "教大登录已成功，但系统暂时没有返回 MEEN 申请档案编号。该编号可能尚未生成，请稍后再查或向教大签证负责部门确认。",
+        422
+      );
+    }
+    throw new OfficialServiceError("教大返回的资料暂时无法识别，请稍后重试。", 502);
+  }
 }
 
 async function createRequestContext() {

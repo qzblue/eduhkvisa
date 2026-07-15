@@ -126,10 +126,15 @@
             <div class="ephemeral-note"><i></i><span><strong>即时处理</strong>签证资料不写入数据库、文件或应用日志。</span></div>
           </aside>
 
-          <form id="officialLoginForm" class="official-form" autocomplete="off">
+          <form id="officialLoginForm" class="official-form" autocomplete="off" novalidate>
             <div class="form-title">
               <div><span>教大官网登录资料</span><h2>填写查询资料</h2></div>
               <a href="https://pappl.eduhk.hk/VMS/admission" target="_blank" rel="noopener noreferrer">打开教大官网 ↗</a>
+            </div>
+
+            <div id="officialFormAlert" class="form-alert" role="alert" hidden>
+              <i aria-hidden="true">!</i>
+              <div><strong>请检查查询资料</strong><p id="officialFormAlertMessage"></p></div>
             </div>
 
             <div class="official-fields">
